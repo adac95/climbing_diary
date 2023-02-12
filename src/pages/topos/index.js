@@ -1,92 +1,80 @@
 import { useEffect, useState } from "react";
-import { render } from "react-dom";
+import { useSelector } from "react-redux";
+import { API_URL } from "variables";
+import OptionsTopoToRender from "../../components/OptionsTopoToRender";
+import { PlaceToRender } from "../../components/PlaceToRender";
+import SelectTopoOption from "../../components/SelectTopoOption";
+const optionsToRenderInTopo = ["info", "sectores", "apuntes"];
 
 export default function Topos() {
-  const [regions, setRegions] = useState([]);
-  const [regionInput, setRegionInput] = useState("");
-  const [placeInput, setPlaceInput] = useState();
-  const [places, setPlaces] = useState([]);
-  const [renderPlace, setRenderPlace] = useState();
-  const getData = async (search) => {
-    const res = await fetch(`http://localhost:3001/api/${search}`);
+  const getDataFromApi = async (search) => {
+    const res = await fetch(`${API_URL}/api/${search}`);
     const data = await res.json();
     return data;
   };
 
+  // ----------- TODO: SEPARAR LOGICA PARA INPUTS Y RENDERS DE PLACES EN OTRO ARCHIVO ---------
+  const [regions, setRegions] = useState([]);
+  const [regionInput, setRegionInput] = useState("");
+  const [placeInput, setPlaceInput] = useState();
+  const [places, setPlaces] = useState();
+  const [renderPlace, setRenderPlace] = useState();
+  const [renderSectors, setRenderSectors] = useState();
+  const btnToRender = useSelector((state) => state.topos.btnToRender);
+
   useEffect(() => {
-    getData("regions").then((data) => {
+    getDataFromApi("regions").then((data) => {
       setRegions(data.body);
     });
   }, []);
 
   useEffect(() => {
-    getData(`places/search?region=${regionInput}`).then((data) => {
+    getDataFromApi(`places/search?region=${regionInput}`).then((data) => {
       setPlaces(data.body);
-      setPlaceInput(null)
+      setPlaceInput(null);
     });
   }, [regionInput]);
 
   useEffect(() => {
-    getData(`places/${placeInput}`).then((data) => {
-      console.log(data);
+    getDataFromApi(`places/${placeInput}`).then((data) => {
       setRenderPlace(data.body);
     });
+    if(placeInput){
+      getDataFromApi(`sectors/search?place=${placeInput}`).then((data) => {setRenderSectors(data.body); console.log(data)});
+    }
   }, [placeInput]);
+
+  //  --------------------FIN DE TODO------------------------------------------
+
+  // TODO : SEPARAR LO NECESARIO PARA RENDER SECTORES
+
+  // useEffect(() => {
+  //   console.log(placeInput)
+  //   if (btnToRender.name === "sectores") {
+  //     getDataFromApi(`sectors/search?place=${placeInput}`).then((data) => {setRenderSectors(data); console.log(data)});
+  //   }
+  //   return
+  // }, []);
 
   return (
     <div>
       <h3>Escoge el lugar</h3>
-      <select
-        onChange={(e) => {
-          setRegionInput(e.target.value);
-        }}
-      >
-        <option value="">--- choose ---</option>
-        {regions.map((region) => {
-          return (
-            <>
-              <option key={region._id} value={region._id}>
-                {region.name}
-              </option>
-            </>
-          );
+      <SelectTopoOption data={regions} inputToSet={setRegionInput} />
+      {places && <SelectTopoOption data={places} inputToSet={setPlaceInput} />}
+      {renderPlace &&
+        optionsToRenderInTopo.map((e) => {
+          return <OptionsTopoToRender name={e} key={e} />;
         })}
-      </select>
-      {places && (
-        <select
-    
-          onChange={(e) => {
-            setPlaceInput(e.target.value);
-          }}
-        >
-          <option value="">--- choose ---</option>
-          {places.map((place) => {
-            return (
-              <>
-                <option key={place._id} value={place._id}>
-                  {place.name}
-                </option>
-              </>
-            );
-          })}
-        </select>
+      {btnToRender.name === "info" && btnToRender.isActive && (
+        <PlaceToRender place={renderPlace} />
       )}
-      {renderPlace && <>
-      <h2>{renderPlace.name}</h2>
-      <h4>Informacion</h4> 
-      <p>{renderPlace.aproach.info}</p>
-      <h4>¿Cómo llegar?</h4>
-      <h5>Transporte público:</h5>
-      <p>{renderPlace.aproach['transporte publico']}</p>
-      <h5>Transporte privado:</h5>
-      <p>{renderPlace.aproach['transporte privado']}</p>
-      <h4>Precios</h4>
-      <p>{renderPlace.price}</p>
-      <h4>Zona de camping</h4>
-      <p>{renderPlace.camping.price}</p>
-      <h4>Lodge/Hospedaje</h4>
-      <p>{renderPlace.lodge.price}</p>
-      </>}
+      {btnToRender.name === "sectores" && btnToRender.isActive && (
+        <>
+        <h3>Sectoresss</h3>
+        <h4>{renderSectors[0]?.name}</h4>
+
+        </>
+      )}
     </div>
   );
 }

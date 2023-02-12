@@ -1,0 +1,28 @@
+import { setBtnToRender } from "@redux/reducers/toposReducer";
+import { useDispatch, useSelector } from "react-redux";
+
+export default function OptionsTopoToRender({ name }) {
+  const btnToRender = useSelector((state) => state.topos.btnToRender);
+  const dispatch = useDispatch();
+  const clickHandle = (e) => {
+    if (e.target.name == btnToRender.name) {
+      dispatch(
+        setBtnToRender({ name: e.target.name, isActive: !btnToRender.isActive })
+      );
+    } else {
+      dispatch(setBtnToRender({ name: e.target.name, isActive: true }));
+    }
+  };
+  return (
+    <div>
+      <button
+        onClick={(e) => {
+          clickHandle(e);
+        }}
+        name={name}
+      >
+        {name}
+      </button>
+    </div>
+  );
+}
