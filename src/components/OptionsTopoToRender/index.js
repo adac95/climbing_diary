@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 export default function OptionsTopoToRender({ name }) {
   const btnToRender = useSelector((state) => state.topos.btnToRender);
   const dispatch = useDispatch();
+
+  
   const clickHandle = (e) => {
     if (e.target.name == btnToRender.name) {
       dispatch(
