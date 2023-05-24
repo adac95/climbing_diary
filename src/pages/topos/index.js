@@ -8,6 +8,7 @@ import { PlaceToRender } from "../../components/PlaceToRender";
 import SelectTopoOption from "../../components/SelectTopoOption";
 const optionsToRenderInTopo = ["info", "sectores", "apuntes"];
 import { getDataFromApi } from "src/utils/getDataFromApi";
+import RoutesComponent from "@components/RoutesComponent";
 
 export default function Topos() {
   const { regions } = useRegions();
