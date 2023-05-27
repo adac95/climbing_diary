@@ -72,7 +72,7 @@ export default function Topos() {
       {btnToRender.name === "sectores" && btnToRender.isActive && (
         <>
           <h2>Sectores</h2>
-          {renderSectors.map((e) => (
+          {renderSectors?.map((e) => (
             <SectorsToRender key={e._id} sectors={e} />
           ))}
         </>

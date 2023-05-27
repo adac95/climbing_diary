@@ -3,7 +3,7 @@ import { useState } from "react";
 
 export default function SectorsToRender({ sectors }) {
   const [isShow, setIsShow] = useState(false);
-  const { name, aproach, style } = sectors;
+  const { name, aproach, style, _id  } = sectors;
   const handleRoutes = () => {
     setIsShow(!isShow);
   };
@@ -15,10 +15,10 @@ export default function SectorsToRender({ sectors }) {
       <h4>Estilos de escalada</h4>
       <p>{style.map((e) => `[${e} ]`)}</p>
       <h4>Cantida de rutas</h4>
-      <button onClick={handleRoutes}>
+      <button onClick={handleRoutes} >
         Ver Rutas
       </button>
-      {isShow && <RoutesComponent />}
+      {isShow && <RoutesComponent id={_id}/>}
     </>
   );
 }
