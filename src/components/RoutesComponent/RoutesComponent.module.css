@@ -1,0 +1,57 @@
+/* RutasDeEscalada.module.css */
+
+.container {
+    margin: 20px;
+  }
+  
+  .heading {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    
+  }
+  
+  .listHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    
+  }
+  
+  .headerItem {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    
+  }
+  
+  .listItem {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    justify-content: center;
+    align-items: center;
+    
+  }
+  
+  .item {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    
+  }
+  
+  /* Estilos responsive */
+  
+  @media (max-width: 300px) {
+    .listHeader, .listItem {
+      flex-direction: column;
+    }
+  }
+  

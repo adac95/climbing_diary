@@ -73,7 +73,7 @@ export default function Topos() {
         <>
           <h2>Sectores</h2>
           {renderSectors?.map((e) => (
-            <SectorsToRender key={e._id} sectors={e} />
+            <SectorsToRender key={e._id} sector={e} />
           ))}
         </>
       )}
