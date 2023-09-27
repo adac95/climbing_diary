@@ -52,16 +52,6 @@ onSubmit={(e) => {
 }
 >
 <input type='file' name="image_with_routes" />
-{/* <input type='text' name='id' defaultValue='63117b9ca76bcb3646779e76' /> */}
-{/* <input type='text' name='style' defaultValue='lead' />
-<input
-  type='text'
-  name='sector'
-  defaultValue='6311749cfa7f48ae79c52a57'
-/>
-<input type='text' name='grade' defaultValue='{"usa": "a"}' />
-<input type='text' name='is_project' defaultValue='false' />
-<input type='text' name='is_multipitch' defaultValue='false' /> */}
 <button>enviar</button>
 </form>
 </>

@@ -1,0 +1,14 @@
+.container {
+font-size: 1rem;
+width: 95%;
+margin: auto;
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+.container span {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}

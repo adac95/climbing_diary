@@ -1,0 +1,24 @@
+.button {
+    cursor: pointer;
+    padding: 8px 20px;
+    border: 1px solid #8d8787;
+    border-radius: 8px;
+    background-color: #f5e63d;
+    font-size: 1.4rem;
+    letter-spacing: 3px;
+}
+
+.button:hover{
+    font-style: oblique;
+    background-color: rgb(244, 249, 194);
+    outline: 2px solid rgb(215, 198, 4);
+    border-color: rgb(236, 220, 43);
+}
+
+.buttonIsActive {
+    font-style: oblique;
+    background-color: rgb(251, 247, 185);
+    font-weight: 100;
+    outline: 2px solid rgb(255, 236, 21);
+    border-color: rgb(236, 220, 43);
+}

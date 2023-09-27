@@ -9,6 +9,7 @@ import SelectTopoOption from "../../components/SelectTopoOption";
 const optionsToRenderInTopo = ["info", "sectores", "apuntes"];
 import { getDataFromApi } from "src/utils/getDataFromApi";
 import RoutesComponent from "@components/RoutesComponent";
+import styles from "./styles.module.css";
 
 export default function Topos() {
   const { regions } = useRegions();
@@ -49,33 +50,34 @@ export default function Topos() {
   }, []);
 
   return (
-    <div>
-      <h3>Escoge el lugar</h3>
-      <SelectTopoOption data={regions} inputToSet={getPlacesByRegion} />
-      {places && (
-        <SelectTopoOption data={places} inputToSet={getSectorsByPlace} />
-      )}
-
+    <div className={styles.container}>
+      <h3 className={styles.h3}>Escoge el lugar</h3>
+      <section className={styles.options}>
+        <SelectTopoOption data={regions} inputToSet={getPlacesByRegion} />
+        {places && (
+          <SelectTopoOption data={places} inputToSet={getSectorsByPlace} />
+        )}
+      </section>
       {/* MUESTRA LAS OPCIONES DE BOTONES */}
-
-      {renderPlace &&
-        optionsToRenderInTopo.map((e) => {
-          return <OptionsTopoToRender name={e} key={e} />;
-        })}
-
+      <section className={styles.buttons}>
+        {renderPlace &&
+          optionsToRenderInTopo.map((e) => {
+            return <OptionsTopoToRender className={styles.button} name={e} key={e} />;
+          })}
+      </section>
       {/* RENDERIZA LA INFORMACION SEGUN EL BOTON QUE ESCOJA */}
 
       {btnToRender.name === "info" && btnToRender.isActive && renderPlace && (
         <PlaceToRender place={renderPlace} />
       )}
 
-      {btnToRender.name === "sectores" && btnToRender.isActive && (
-        <>
-          <h2>Sectores</h2>
+      {btnToRender.name === "sectores" && btnToRender.isActive && renderSectors && (
+        <section className={styles.sectors}>
+          <h2 className={styles.tittle}>Sectores</h2>
           {renderSectors?.map((e) => (
             <SectorsToRender key={e._id} sector={e} />
           ))}
-        </>
+        </section>
       )}
     </div>
   );

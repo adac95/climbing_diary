@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './Header.module.css'; // Importar el archivo CSS module
+import Link from 'next/link';
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -15,7 +16,7 @@ const Header = () => {
       </div>
       <nav className={styles.options}>
         <ul>
-          <li>Inicio</li>
+          <Link href='/' >Inicio</Link>
           <li>Acerca de</li>
           <li>Servicios</li>
         </ul>

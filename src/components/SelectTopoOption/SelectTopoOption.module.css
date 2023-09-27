@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 5px;
+  margin: auto;
+}
+.select{
+  padding: 4px 10px;
+  border-radius: 10px;
+}

@@ -1,10 +1,20 @@
 import Route from "@components/Route";
-import styles from './RoutesComponent.module.css';
+import styles from "./RoutesComponent.module.css";
 import { useEffect, useState } from "react";
 import { getDataFromApi } from "src/utils/getDataFromApi";
 
-function RoutesComponent({id}) {
+function RoutesComponent({ id }) {
   const [rutas, setRoutes] = useState([]);
+  const subtitles = [
+    "Nombre",
+    "Estilo",
+    "Multilargo",
+    "Grado",
+    "Distancia",
+    "Año",
+    "Encadenada",
+  ];
+
   useEffect(() => {
     getDataFromApi(`routes/search?sector=${id}`).then((data) => {
       setRoutes(data.body);
@@ -13,7 +23,7 @@ function RoutesComponent({id}) {
 
   return (
     <>
-     <div className={styles.container}>
+      <div className={styles.container}>
       <ul className={styles.list}>
         <li className={styles.listHeader}>
           <div>Nro</div>
@@ -28,9 +38,9 @@ function RoutesComponent({id}) {
         {rutas?.map((ruta) => (
           <li key={ruta._id} className={styles.listItem}>
             <p className={styles.item}>{ruta['image_number'] || '0' }</p>
-            <p className={styles.item}>{ruta.name}</p>
+            <p className={`${styles.item} ${styles.itemName}`}>{ruta.name}</p>
             <p className={styles.item}>{ruta.style}</p>
-            <p className={styles.item}>{(ruta['is_multipicth']) ? "✔" : '❌'}</p>
+            <p className={styles.item}>Multilargo {(ruta['is_multipicth']) ? "✔" : '❌'}</p>
             <p className={styles.item}>{(ruta.grade['french'])}/{(ruta.grade['usa'])}</p>
             <p className={styles.item}>{ruta.distance}</p>
             <p className={styles.item}>{ruta['year_opened']}</p>
@@ -40,9 +50,7 @@ function RoutesComponent({id}) {
         ))}
       </ul>
     </div>
-      {/* {routes.map((e) => (
-        <Route key={e._id} route={e} />
-      ))} */}
+      
     </>
   );
 }
