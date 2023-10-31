@@ -10,6 +10,7 @@ const optionsToRenderInTopo = ["info", "sectores", "apuntes"];
 import { getDataFromApi } from "src/utils/getDataFromApi";
 import RoutesComponent from "@components/RoutesComponent";
 import styles from "./styles.module.css";
+import ModalRouteDone from "@components/ModalRouteDone";
 
 export default function Topos() {
   const { regions } = useRegions();
@@ -58,6 +59,7 @@ export default function Topos() {
           <SelectTopoOption data={places} inputToSet={getSectorsByPlace} />
         )}
       </section>
+      <ModalRouteDone/>
       {/* MUESTRA LAS OPCIONES DE BOTONES */}
       <section className={styles.buttons}>
         {renderPlace &&
