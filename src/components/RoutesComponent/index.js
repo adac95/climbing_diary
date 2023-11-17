@@ -2,6 +2,7 @@ import Route from "@components/Route";
 import styles from "./RoutesComponent.module.css";
 import { useEffect, useState } from "react";
 import { getDataFromApi } from "src/utils/getDataFromApi";
+import ModalRouteDone from "@components/ModalRouteDone";
 
 function RoutesComponent({ id }) {
   const [rutas, setRoutes] = useState([]);
@@ -20,6 +21,9 @@ function RoutesComponent({ id }) {
       setRoutes(data.body);
     });
   }, []);
+
+  const [isOpen, setIsOpen] = useState(false);
+  const closeModal = ()=>{ setIsOpen(false)}
 
   return (
     <>
@@ -55,11 +59,13 @@ function RoutesComponent({ id }) {
                 className={styles.item}
                 checked={ruta["is_done"]}
                 type='checkbox'
+                onClick={() => setIsOpen(true)}
               ></input>
             </li>
           ))}
         </ul>
       </div>
+          {isOpen && <ModalRouteDone isOpen={isOpen} onClose={closeModal}/>}
     </>
   );
 }

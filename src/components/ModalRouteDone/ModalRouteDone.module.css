@@ -1,19 +1,26 @@
 .modal {
-  width: 100%;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  backdrop-filter: blur(5px);
   display: flex;
   align-items: center;
   justify-content: center;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  & .backModal {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    backdrop-filter: blur(5px);
+    z-index: 1;
+  }
 
   & .container {
-    width: 80%;
-    height: 40vh;
-    padding: 0 20px;
+    width: 80vw;
+    height: 50vh;
+    min-height: 480px;
+    padding: 30px 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -21,6 +28,7 @@
     background-color: rgb(243, 247, 251);
     border-radius: 15px;
     border: 1px solid rgb(200, 196, 196);
+    z-index: 20;
 
     & .closeButton {
       width: min-content;
@@ -52,6 +60,10 @@
       border-radius: 8px;
     }
 
+    & .text-area {
+      resize: none;
+    }
+
     & .uploadButton {
       padding: 8px;
       letter-spacing: 1px;
@@ -60,10 +72,10 @@
       border-radius: 8px;
     }
 
-    & .uploadButton:hover{
-        cursor: pointer;
-        color: green;
-        border: 1px solid green;
+    & .uploadButton:hover {
+      cursor: pointer;
+      color: green;
+      border: 1px solid green;
     }
   }
 }

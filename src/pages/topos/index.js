@@ -59,7 +59,7 @@ export default function Topos() {
           <SelectTopoOption data={places} inputToSet={getSectorsByPlace} />
         )}
       </section>
-      <ModalRouteDone/>
+      {/* <ModalRouteDone/> */}
       {/* MUESTRA LAS OPCIONES DE BOTONES */}
       <section className={styles.buttons}>
         {renderPlace &&
