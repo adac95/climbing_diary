@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react';
 import styles from './Header.module.css'; // Importar el archivo CSS module
 import Link from 'next/link';

@@ -1,3 +1,4 @@
+'use client'
 import SectorsToRender from "@components/SectosToRender";
 import { setBtnToRender } from "@redux/reducers/toposReducer";
 import { useCallback, useEffect, useState } from "react";

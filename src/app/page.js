@@ -7,7 +7,7 @@ import Link from "next/link";
 export default async function Home() {
 
   const supabase = createServerComponentClient({cookies})
-  const data = await supabase.from('region').select()
+  const {data} = await supabase.from('region').select()
   console.log(data)
   return (
     <div >
