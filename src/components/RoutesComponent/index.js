@@ -1,4 +1,4 @@
-import Route from "@components/Route";
+// import Route from "@components/Route";
 import styles from "./RoutesComponent.module.css";
 import { useEffect, useState } from "react";
 import { getDataFromApi } from "src/utils/getDataFromApi";
@@ -6,15 +6,15 @@ import ModalRouteDone from "@components/ModalRouteDone";
 
 function RoutesComponent({ id }) {
   const [rutas, setRoutes] = useState([]);
-  const subtitles = [
-    "Nombre",
-    "Estilo",
-    "Multilargo",
-    "Grado",
-    "Distancia",
-    "Año",
-    "Encadenada",
-  ];
+  // const subtitles = [
+  //   "Nombre",
+  //   "Estilo",
+  //   "Multilargo",
+  //   "Grado",
+  //   "Distancia",
+  //   "Año",
+  //   "Encadenada",
+  // ];
 
   useEffect(() => {
     getDataFromApi(`routes/search?sector=${id}`).then((data) => {

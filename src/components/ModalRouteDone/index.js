@@ -20,7 +20,7 @@ function ModalRouteDone({ isOpen, onClose }) {
       <section className={styles.modal}>
         <div
           className={styles.backModal}
-          onClick={(e) => {
+          onClick={() => {
             onClose();
           }}
         ></div>
