@@ -1,8 +1,8 @@
 import Header from "@components/Header";
 import { store } from "@redux/store";
 import { Poppins } from "next/font/google";
-import "../styles/globals.css";
 import { Providers } from "@redux/providers/toposProvider";
+import "../styles/globals.css";
 
 const inter = Poppins({
   weight: ["100", "300", "500", "700"],

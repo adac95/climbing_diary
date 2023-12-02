@@ -1,14 +1,10 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
 
 import { ImageTest } from "@components/ImageTest";
 import Link from "next/link";
 
 export default async function Home() {
 
-  const supabase = createServerComponentClient({cookies})
-  const {data} = await supabase.from('region').select()
-  console.log(data)
+  
   return (
     <div >
       <h1>hola</h1>

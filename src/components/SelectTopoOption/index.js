@@ -9,17 +9,15 @@ export default function SelectTopoOption({ data, inputToSet }) {
           inputToSet(e.target.value);
         }}
       >
-        <option className={styles.option} >
-          --- choose ---
-        </option>
+        <option className={styles.option} value="undefined">--- choose ---</option>
 
         {data &&
           data.map((dataToMap) => {
             return (
               <option
                 className={styles.option}
-                key={dataToMap._id}
-                value={dataToMap._id}
+                key={dataToMap.id}
+                value={dataToMap.id}
               >
                 {dataToMap.name}
               </option>

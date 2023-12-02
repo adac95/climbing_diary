@@ -1,11 +1,9 @@
 // import Route from "@components/Route";
 import styles from "./RoutesComponent.module.css";
-import { useEffect, useState } from "react";
-import { getDataFromApi } from "src/utils/getDataFromApi";
+import { useState } from "react";
 import ModalRouteDone from "@components/ModalRouteDone";
 
-function RoutesComponent({ id }) {
-  const [rutas, setRoutes] = useState([]);
+function RoutesComponent({ routes }) {
   // const subtitles = [
   //   "Nombre",
   //   "Estilo",
@@ -16,14 +14,10 @@ function RoutesComponent({ id }) {
   //   "Encadenada",
   // ];
 
-  useEffect(() => {
-    getDataFromApi(`routes/search?sector=${id}`).then((data) => {
-      setRoutes(data.body);
-    });
-  }, []);
-
   const [isOpen, setIsOpen] = useState(false);
-  const closeModal = ()=>{ setIsOpen(false)}
+  const closeModal = () => {
+    setIsOpen(false);
+  };
 
   return (
     <>
@@ -40,8 +34,8 @@ function RoutesComponent({ id }) {
             <div className={styles.headerItem}>Proyecto</div>
             <div className={styles.headerItem}>Encadenada</div>
           </li>
-          {rutas?.map((ruta) => (
-            <li key={ruta._id} className={styles.listItem}>
+          {routes?.map((ruta) => (
+            <li key={ruta.id} className={styles.listItem}>
               <p className={styles.item}>{ruta["image_number"] || "0"}</p>
               <p className={`${styles.item} ${styles.itemName}`}>{ruta.name}</p>
               <p className={styles.item}>{ruta.style}</p>
@@ -65,7 +59,7 @@ function RoutesComponent({ id }) {
           ))}
         </ul>
       </div>
-          {isOpen && <ModalRouteDone isOpen={isOpen} onClose={closeModal}/>}
+      {isOpen && <ModalRouteDone isOpen={isOpen} onClose={closeModal} />}
     </>
   );
 }
