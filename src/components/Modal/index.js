@@ -10,7 +10,9 @@ export default function Modal({ isOpen, onClose, children }) {
             onClose();
           }}
         ></div>
+        <div className={styles.children}>
         {children}
+        </div>
       </section>
     )
   );

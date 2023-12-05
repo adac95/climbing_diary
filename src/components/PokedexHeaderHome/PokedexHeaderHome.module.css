@@ -1,0 +1,31 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 3px;
+  border-bottom: 1px solid gainsboro;
+  margin-bottom: 5px;
+}
+
+& .button {
+  cursor: pointer;
+  min-width: 160px;
+  height: 33px;
+  border: 1px solid gainsboro;
+  border-radius: 8px;
+  background-color: #f5e63d;
+  letter-spacing: 1px;
+}
+
+& .button::before {
+  content: "Crear nueva nota";
+}
+
+.button:hover::before {
+  font-style: oblique;
+  content: "";
+}
+
+.button.button:hover::after {
+  content: "🧗🏻‍♀️";
+}

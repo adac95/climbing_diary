@@ -16,4 +16,8 @@
     z-index: 1;
   }
 
+  & .children {
+    z-index: 10;
+  }
+
 }
