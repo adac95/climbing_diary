@@ -1,7 +1,8 @@
 // import Route from "@components/Route";
 import styles from "./RoutesComponent.module.css";
 import { useState } from "react";
-import ModalRouteDone from "@components/ModalRouteDone";
+import Modal from "@components/Modal";
+import RouteDoneModal from "@components/RouteDoneModal";
 
 function RoutesComponent({ routes }) {
   // const subtitles = [
@@ -59,7 +60,11 @@ function RoutesComponent({ routes }) {
           ))}
         </ul>
       </div>
-      {isOpen && <ModalRouteDone isOpen={isOpen} onClose={closeModal} />}
+      {isOpen && (
+        <Modal isOpen={isOpen} onClose={closeModal}>
+          <RouteDoneModal onClose={closeModal}  />
+        </Modal>
+      )}
     </>
   );
 }
