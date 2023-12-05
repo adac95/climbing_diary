@@ -1,0 +1,49 @@
+.container {
+  background-color: aquamarine;
+  width: 96%;
+  height: auto;
+  margin: auto;
+  border: solid 1px gainsboro;
+  border-radius: 8px;
+  z-index: 100;
+
+
+  & .info {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 3px 5px;
+    justify-content: space-between;
+    align-items: center;
+    
+  }
+
+  /* & .p { */
+    /* width: 100%;
+    height: max-content; */
+    /* background-color: brown; */
+    /* word-wrap: break-word; */
+    /* word-break: keep-all; */
+    
+  /* } */
+  /* 
+  & .checkbox {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    z-index: 200;
+    background-color: transparent;
+    border: 0px solid transparent;
+    border-color: transparent;
+  } */
+
+  
+  /* & .checkbox:hover {
+    cursor: pointer;
+  } */
+}
