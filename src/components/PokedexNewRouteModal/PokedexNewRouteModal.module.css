@@ -1,0 +1,54 @@
+.container {
+  background-color: blueviolet;
+  width: 90%;
+  margin: auto;
+  padding: 20px 15px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  top: -50px;
+  gap: 8px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+
+  & .label {
+    display: flex;
+    flex-direction: column;
+
+    & .input {
+      min-height: 15px;
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: solid 1px gainsboro;
+      resize: none;
+    }
+  }
+
+  & .fieldset {
+    display: flex;
+    gap: 10px;
+    padding: 5px 10px;
+    border: 1px solid gainsboro;
+    border-radius: 8px;
+    & .legend {
+      letter-spacing: 1px;
+      font-weight: 300;
+    }
+    & .label {
+      flex-direction: row;
+      gap: 5px;
+      font-weight: 300;
+    }
+  }
+
+  & .submitBtn {
+    padding: 5px 0;
+    border-radius: 8px;
+    border: 1px solid gainsboro;
+    margin-top: 5px;
+    background-color: rgba(249, 244, 244, 0.716);
+  }
+  & .submitBtn:hover {
+    cursor: pointer;
+  }
+}
