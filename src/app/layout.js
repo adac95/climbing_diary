@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
     <html lang='en'>
       <body>
         <Providers store={store}>
-          <div className={inter.className}>
+          <div className={`${inter.className} antialiased `}>
             <Header />
             {children}
           </div>
