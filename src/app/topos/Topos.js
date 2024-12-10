@@ -10,6 +10,9 @@ const optionsToRenderInTopo = ["info", "sectores", "apuntes"];
 import styles from "./styles.module.css";
 
 export default function Topos({ regions, places, sectors, routes }) {
+
+  
+console.log(regions)
   // ----------- TODO: SEPARAR LOGICA PARA INPUTS Y RENDERS DE PLACES EN OTRO ARCHIVO ---------
   const [regionId, setRegionId] = useState();
   const [placeId, setPlaceId] = useState();

@@ -18,7 +18,7 @@ export default function SectorsToRender({ sector, routes }) {
         <h4>Approach</h4>
         <p>{approach}</p>
         <h4>Estilos de escalada</h4>
-        <p>{style.map((e) => `[${e} ]`)}</p>
+        <p>{style}</p>
         <h4>Cantida de rutas</h4>
       </div>
       {!isShow && (
@@ -29,7 +29,8 @@ export default function SectorsToRender({ sector, routes }) {
           height={"150"}
           alt='image of sector'
           // src={`${API_URL}/${sector["image_with_routes"].path}`}
-          src={`https://source.unsplash.com/random/?mountain/${id}/300x150`}
+          // src={`https://source.unsplash.com/random/?mountain/${id}/300x150`}
+          // src={`https://api.unsplash.com/photos/random?query=mountains`}
         />
       )}
       <button
@@ -47,7 +48,7 @@ export default function SectorsToRender({ sector, routes }) {
             width={"300"}
             height={"150"}
             alt='image of sector'
-            src={`https://source.unsplash.com/random/?mountain/${id}/300x150`}
+            // src={`https://source.unsplash.com/random/?mountain/${id}/300x150`}
 
             // src={`${API_URL}/${sector["image_with_routes"].path}`}
           />
