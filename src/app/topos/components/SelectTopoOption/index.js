@@ -1,15 +1,18 @@
 import styles from "./SelectTopoOption.module.css";
 
-export default function SelectTopoOption({ data, inputToSet }) {
+export default function SelectTopoOption({ data, inputToSet, defaultValue }) {
   return (
     <section className={styles.container}>
       <select
+        value={defaultValue}
         className={styles.select}
         onChange={(e) => {
           inputToSet(e.target.value);
         }}
       >
-        <option className={styles.option} value="undefined">--- choose ---</option>
+        <option className={styles.option} value='undefined'>
+          --- choose ---
+        </option>
 
         {data &&
           data.map((dataToMap) => {

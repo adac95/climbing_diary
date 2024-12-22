@@ -1,4 +1,4 @@
-import RoutesComponent from "@components/RoutesComponent";
+import RoutesComponent from "src/app/topos/components/RoutesComponent";
 import Image from "next/image";
 import { useState } from "react";
 import { API_URL } from "variables";
@@ -29,7 +29,7 @@ export default function SectorsToRender({ sector, routes }) {
           height={"150"}
           alt='image of sector'
           // src={`${API_URL}/${sector["image_with_routes"].path}`}
-          // src={`https://source.unsplash.com/random/?mountain/${id}/300x150`}
+          src={`https://source.unsplash.com/random/?mountain/${id}/300x150`}
           // src={`https://api.unsplash.com/photos/random?query=mountains`}
         />
       )}
@@ -48,7 +48,7 @@ export default function SectorsToRender({ sector, routes }) {
             width={"300"}
             height={"150"}
             alt='image of sector'
-            // src={`https://source.unsplash.com/random/?mountain/${id}/300x150`}
+            src={`https://source.unsplash.com/random/?mountain/${id}/300x150`}
 
             // src={`${API_URL}/${sector["image_with_routes"].path}`}
           />
