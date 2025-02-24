@@ -1,12 +1,17 @@
+import { getRegionById } from "../fetchData";
 
-export default function RegionPage({params}) {
+export default async function RegionPage({ params }) {
+    const { regionId } = await params;
+    const region = await getRegionById(regionId);
+
+    const { name, information, obs } = region[0];
+
     return (
         <div>
-            {/* <SelectTopoOption
-                        data={placesFromDataBase}
-                        inputToSet={getSectorsByPlaceIdSelected}
-                      /> */}
-REGION PAGE
+            REGION
+            <h2>{name}</h2>
+            <p>{information}</p>
+            <p>{obs}</p>
         </div>
     );
 }

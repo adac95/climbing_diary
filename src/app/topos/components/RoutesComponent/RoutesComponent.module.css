@@ -1,21 +1,142 @@
-.listHeader {
+.container {
   display: flex;
-justify-content: space-between;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: 1rem;
+}
+.tableHeader {
+  display: none;
 }
 
-.listItem {
+.routeCard {
+  background-color: var(--color-background);
+  padding: var(--spacing-md);
+  border-radius: 8px;
+}
+
+.routeTitle {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-sm);
+}
+
+.routeInfo {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-light);
+  gap: var(--spacing-xs);
+}
+
+.routeInfoItem {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.routeInfoLabel {
+  color: #666;
+}
+
+.routeInfoValue {
+  color: #444;
+}
+
+.checkboxContainer {
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.checkbox {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.checkboxLabel {
+  display: flex;
   justify-content: space-between;
-  background-color: rgba(248, 248, 248, 0.996);
-  gap: 5px;
-  border:3px solid #fff;
-  margin: auto;
-font-weight: 300;
+  padding-right: 20px;
+  padding-bottom: 10px;
+  align-items: center;
+  color: #666;
 }
 
-.itemName{
-font-style: italic;
-font-size: 1.1rem;
-font-weight: 400;
+@media (min-width: 640px) {
+  .container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+
+  .routeCard {
+    flex: 1 1 calc(50% - var(--spacing-md));
+    box-sizing: border-box;
+  }
+}
+
+/* Table layout for screens wider than 860px */
+@media (min-width: 860px) {
+  .container {
+    display: table;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+  }
+
+  .tableHeader {
+    display: table-header-group;
+    font-size: var(--font-size-sm);
+  }
+
+  .headerRow {
+    display: table-row;
+  }
+
+  .headerCell {
+    display: table-cell;
+    padding: var(--spacing-md) 0;
+    text-align: left;
+  }
+
+  .routeCard {
+    display: table-row;
+    box-shadow: none;
+  }
+
+  .routeCard:nth-child(even) {
+    background-color: rgba(1, 0, 2, 0.004);
+  }
+
+  .routeTitle,
+  .routeInfoValue {
+    display: table-cell;
+    padding: var(--spacing-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-light);
+  }
+
+  .routeInfo {
+    display: contents;
+  }
+
+  .routeInfoItem {
+    display: contents;
+  }
+
+  .routeInfoLabel {
+    display: none;
+  }
+
+  .checkbox {
+    position: static;
+    display: table-cell;
+    vertical-align: middle;
+    padding: 1rem;
+    text-align: center;
+  }
 }

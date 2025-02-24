@@ -1,0 +1,24 @@
+.button {
+  width: 100%;
+  cursor: pointer;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: var(--border-button-regular) solid var(--color-yellow);
+  border-radius: var(--border-radius);
+  background-color: var(--color-withe);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-light);
+  letter-spacing: 3px;
+}
+
+.button:hover {
+  font-style: oblique;
+  background-color: var(--color-yellow);
+}
+
+.buttonIsActive {
+  font-style: oblique;
+  /* background-color: rgb(251, 247, 185); */
+  font-weight: 100;
+  /* outline: 2px solid rgb(255, 236, 21); */
+  /* border-color: rgb(236, 220, 43); */
+}

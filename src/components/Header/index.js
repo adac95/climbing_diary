@@ -18,8 +18,8 @@ const Header = () => {
       <nav className={styles.options}>
         <ul>
           <Link href='/' >Inicio</Link>
-          <li>Acerca de</li>
-          <li>Servicios</li>
+          <Link href='/topos'>topos</Link>
+          <Link href='/data'>data</Link>
         </ul>
       </nav>
       <div className={styles['user-management']}>

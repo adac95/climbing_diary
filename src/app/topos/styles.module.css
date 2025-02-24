@@ -1,43 +1,40 @@
 .container {
-    padding: 7px 0;
+  padding: 7px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: auto;
+
+  & .h3 {
+    letter-spacing: 0.2rem;
+    margin: 0 0 -8px 8px;
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  & .options {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    width: 95%;
-    margin: auto;
-    
-    & .h3 {
-        letter-spacing: .2rem;
-        margin:0 0 -8px 8px;
-        font-size: 1rem;
-        font-weight: 400;
-    }
-    
-    & .options {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-    & .buttons {
-        
-        display: flex;
-        flex-wrap: wrap;
-        gap: 3px;
-    }
-    
-    & .sectors{
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
+    gap: 4px;
+  }
+  & .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+  }
 
-        & .tittle{
-            margin-bottom: -20px;
-        }
+  & .sectors {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    & .tittle {
+      margin-bottom: -20px;
     }
+  }
 }
 
 .buttons button {
-    flex-grow: 1;
-    flex-basis: calc(50% - 3px);
+  flex-grow: 1;
+  flex-basis: calc(50% - 3px);
 }
-

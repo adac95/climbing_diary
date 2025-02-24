@@ -1,0 +1,15 @@
+.info h3 {
+    font-size: var(--font-size-md);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+.details {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+.details p {
+    font-size: var(--font-size-xs);
+    color: var(--color-secondary);
+    margin-bottom: var(--spacing-xs);
+  }
+  

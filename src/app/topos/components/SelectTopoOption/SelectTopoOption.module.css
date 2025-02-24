@@ -1,11 +1,13 @@
 .container {
-  display: flex;
   width: 100%;
+  display: flex;
   flex-direction: column;
-  gap: 5px;
-  margin: auto;
 }
-.select{
-  padding: 4px 10px;
-  border-radius: 10px;
+.select {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-light);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--border-radius);
+  word-spacing: 3px;
+  letter-spacing: 2px;
 }

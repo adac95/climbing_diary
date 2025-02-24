@@ -1,10 +1,10 @@
-// import Route from "@components/Route";
 import styles from "./RoutesComponent.module.css";
 import { useState } from "react";
 import Modal from "@components/Modal";
 import RouteDoneModal from "@components/RouteDoneModal";
 
 function RoutesComponent({ routes }) {
+  console.log(routes);
   const [isOpen, setIsOpen] = useState(false);
   const closeModal = () => {
     setIsOpen(false);
@@ -13,51 +13,73 @@ function RoutesComponent({ routes }) {
   return (
     <>
       <div className={styles.container}>
-        <ul className={styles.list}>
-          <li className={styles.listHeader}>
-            <div>Nro</div>
-            <div className={styles.headerItem}>Nombre</div>
-            <div className={styles.headerItem}>Estilo</div>
-            <div className={styles.headerItem}>multilargo</div>
-            <div className={styles.headerItem}>Grado</div>
-            <div className={styles.headerItem}>Distancia</div>
-            <div className={styles.headerItem}>Año</div>
-            <div className={styles.headerItem}>Proyecto</div>
-            <div className={styles.headerItem}>Encadenada</div>
-          </li>
-          {routes?.map((ruta) => (
-            <li key={ruta.id} className={styles.listItem}>
-              <p className={styles.item}>
-                {ruta["number_of_route_in_picture"] || "0"}
+        <div className={styles.tableHeader}>
+          <div className={styles.headerRow}>
+            <div className={styles.headerCell}>NRO</div>
+            <div className={styles.headerCell}>NOMBRE</div>
+            <div className={styles.headerCell}>ESTILO</div>
+            <div className={styles.headerCell}>GRADO</div>
+            <div className={styles.headerCell}>DISTANCIA</div>
+            <div className={styles.headerCell}>EQUIPAD@R</div>
+            <div className={styles.headerCell}>AÑO</div>
+            <div className={styles.headerCell}>PROYECTO</div>
+            <div className={styles.headerCell}>ENCADENADA</div>
+          </div>
+        </div>
+        {routes.map((route) => (
+          <article key={route.id} className={styles.routeCard}>
+            <div className={styles.routeInfo}>
+            <div className={styles.routeInfoItem}>
+              <p className={styles.routeInfoLabel}>Nro:</p>
+              <p className={styles.routeInfoValue}>
+                {route["number_of_route_in_picture"]}
               </p>
-              <p className={`${styles.item} ${styles.itemName}`}>{ruta.name}</p>
-              <p className={styles.item}>{ruta.style}</p>
-              <p className={styles.item}>
-                Multilargo {ruta["is_multipicth"] ? "✔" : "❌"}
-              </p>
-              <p className={styles.item}>
-                {ruta.grade["french"]}/{ruta.grade["usa"]}
-              </p>
-              <p className={styles.item}>{ruta.distance}</p>
-              <p className={styles.item}>{ruta["year_opened"]}</p>
-              <p className={styles.item}>
-                {ruta["route_developer"].map((e, index) => (
-                  <span key={e.developer_id.name}>
-                    {e.developer_id.name}
-                    {index < ruta["route_developer"].length - 1 && " "}
-                  </span>
-                ))}
-              </p>
-              <p className={styles.item}>{ruta["is_proyect"] ? "✔" : "❌"}</p>
-              <input
-                className={styles.item}
-                checked={ruta["is_done"]}
-                type='checkbox'
-                onClick={() => setIsOpen(true)}
-              ></input>
-            </li>
-          ))}
-        </ul>
+              </div>
+            </div>
+            <h3 className={styles.routeTitle}>{route.name}</h3>
+            <div className={styles.routeInfo}>
+              <div className={styles.routeInfoItem}>
+                <p className={styles.routeInfoLabel}>Estilo:</p>
+                <p className={styles.routeInfoValue}>{route.style_id.name}</p>
+              </div>
+              <div className={styles.routeInfoItem}>
+                <p className={styles.routeInfoLabel}>Grado:</p>
+                <p className={styles.routeInfoValue}>{route.grade}</p>
+              </div>
+              <div className={styles.routeInfoItem}>
+                <p className={styles.routeInfoLabel}>Longitud:</p>
+                <p className={styles.routeInfoValue}>{route.distance}</p>
+              </div>
+              <div className={styles.routeInfoItem}>
+                <p className={styles.routeInfoLabel}>Equipador@s:</p>
+                <p className={styles.routeInfoValue}>
+                  {route["route_developer"]
+                    .map((e) => e["developer_id"].name)
+                    .join(", ")}
+                </p>
+              </div>
+              <div className={styles.routeInfoItem}>
+                <p className={styles.routeInfoLabel}>Año:</p>
+                <p className={styles.routeInfoValue}>{route.year_opened}</p>
+              </div>
+              <div className={styles.routeInfoItem}>
+                <p className={styles.routeInfoLabel}>Proyecto:</p>
+                <p className={styles.routeInfoValue}>
+                  {route.is_proyect ? "✔" : "❌"}
+                </p>
+              </div>
+              <label className={styles.checkboxLabel}>
+              <p className={styles.routeInfoLabel}>Encadenada:</p>
+                <input
+                  type='checkbox'
+                  checked={route.completed}
+                  onChange={() => setIsOpen(true)}
+                  className={styles.checkbox}
+                />
+              </label>
+            </div>
+          </article>
+        ))}
       </div>
       {isOpen && (
         <Modal isOpen={isOpen} onClose={closeModal}>
