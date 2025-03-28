@@ -10,7 +10,7 @@ export default function SelectTopoOption({ data, inputToSet, defaultValue }) {
           inputToSet(e.target.value);
         }}
       >
-        <option className={styles.option} value='undefined'>
+        <option className={styles.option} value=''>
           --- choose ---
         </option>
 

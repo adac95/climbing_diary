@@ -11,7 +11,7 @@
 .routeCard {
   background-color: var(--color-background);
   padding: var(--spacing-md);
-  border-radius: 8px;
+  border-radius: var(--border-radius);
 }
 
 .routeTitle {

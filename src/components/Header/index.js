@@ -1,7 +1,9 @@
-'use client'
-import React, { useState } from 'react';
-import styles from './Header.module.css'; // Importar el archivo CSS module
-import Link from 'next/link';
+"use client";
+import React, { useState } from "react";
+import logoImg from "../../public/assets/image.png";
+import styles from "./Header.module.css"; // Importar el archivo CSS module
+import Link from "next/link";
+import Image from "next/image";
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -11,18 +13,20 @@ const Header = () => {
   };
 
   return (
-    <header className={styles.header}> {/* Aplicar la clase CSS del archivo module */}
+    <header className={styles.header}>
+      {" "}
+      {/* Aplicar la clase CSS del archivo module */}
       <div className={styles.logo}>
-        <img src="/path/to/logo.png" alt="Logo" />
+        <Image src={logoImg} alt='Logo' width={'auto'} height={'auto'} />
       </div>
       <nav className={styles.options}>
         <ul>
-          <Link href='/' >Inicio</Link>
+          <Link href='/'>Inicio</Link>
           <Link href='/topos'>topos</Link>
           <Link href='/data'>data</Link>
         </ul>
       </nav>
-      <div className={styles['user-management']}>
+      <div className={styles["user-management"]}>
         <button onClick={handleDropdownToggle}>Usuarios</button>
         {isDropdownOpen && (
           <div className={styles.dropdown}>

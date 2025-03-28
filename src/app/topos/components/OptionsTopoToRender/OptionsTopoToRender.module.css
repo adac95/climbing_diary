@@ -17,8 +17,5 @@
 
 .buttonIsActive {
   font-style: oblique;
-  /* background-color: rgb(251, 247, 185); */
   font-weight: 100;
-  /* outline: 2px solid rgb(255, 236, 21); */
-  /* border-color: rgb(236, 220, 43); */
 }

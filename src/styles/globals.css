@@ -29,9 +29,11 @@
   padding: 0;
 }
 
-html {
+html,body {
   /* Para utilizar rem */
+  width: 100%;
   font-size: 62.5%;
+  
 }
 
 input,
@@ -51,7 +53,7 @@ select {
   cursor: pointer;
 
   /* Agregar una flecha personalizada */
-  background-image: url('../assets/1.jpg');
+  background-image: url('../public/assets/1.jpg');
   background-repeat: no-repeat;
   background-position: right 20px center;
   background-size: 18px;

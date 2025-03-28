@@ -1,12 +1,18 @@
-import { getAllRegions } from "./fetchData";
+import { Suspense } from "react";
 import TopoSelector from "./topoSelector";
+import SkeletonTopoSelector from "./components/SkeletonLoader/SkeletonTopoSelector.js";
+import { getCachedPlaces, getCachedRegions } from "../../utils/fetchData";
 
-export default async function Toposlayout({ children, params }) {
-  const regions = await getAllRegions();
+export default async function Toposlayout({ children }) {
+ await getCachedRegions();
+  // const places = await getCachedPlaces();
+
   return (
-    <div>
-      <TopoSelector regions={regions} />
-      <div>{children}</div>
-    </div>
+    <Suspense fallback={<SkeletonTopoSelector />}>
+      <div>
+        <TopoSelector regions={[]} places={[]} />
+        {children}
+      </div>
+    </Suspense>
   );
 }

@@ -4,9 +4,3 @@
     flex-direction: column;
     gap: 10px;
 }
-
-.buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-}

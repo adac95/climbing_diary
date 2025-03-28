@@ -1,5 +1,5 @@
 import styles from "./index.module.css";
-import logoImg from "../../assets/logo.png";
+import logoImg from "../../assets/image.png";
 import Image from "next/image";
 
 function Logo() {
