@@ -1,12 +1,9 @@
-// 'use cache'
-import { Suspense, use } from "react";
-import { getAllRegions, getCachedRegions, getRegionById } from "../../../utils/fetchData";
+import { Suspense } from "react";
+import { getRegionById } from "../fetchData";
 
 export default async function RegionPage({ params }) {
-  const regions = await getCachedRegions();
   const { regionId } = await params;
-  // const region = await getRegionById(regionId)
-  const region = regions.find((p) => p.id === regionId);
+  const region = await getRegionById(regionId);
 
   if (!region || region.length === 0) {
     return <p>Región no encontrada.</p>;

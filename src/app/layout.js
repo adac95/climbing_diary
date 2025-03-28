@@ -20,14 +20,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang='en'>
       <body >
-        <Providers store={store}>
+        {/* <Providers store={store}> */}
           <div className={`${inter.className} antialiased `}>
             <Header />
             <div className="bodyContainer">
             {children}
             </div>
           </div>
-        </Providers>
+        {/* </Providers> */}
       </body>
     </html>
   );

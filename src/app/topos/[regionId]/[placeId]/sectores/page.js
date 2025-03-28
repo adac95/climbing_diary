@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import OptionsTopoToRender from "src/app/topos/components/OptionsTopoToRender";
 import SectorsToRender from "src/app/topos/components/SectorsToRender";
-import { getAllRoutes, getSectorsByPlaceId } from "@utils/fetchData";
+import { getAllRoutes, getSectorsByPlaceId } from "../../../fetchData";
 import styles from "./SectorPage.module.css"
 
 export default async function SectorPage({ params }) {
