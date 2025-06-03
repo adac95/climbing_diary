@@ -13,7 +13,7 @@ export default function PokedexHeaderHome() {
   return (
     <>
       <header className={styles.header}>
-        <h2>Rutas</h2>
+        <h2>Rutas en tu pokedex</h2>
         <button
           className={styles.button}
           onClick={() => setIsOpen(true)}

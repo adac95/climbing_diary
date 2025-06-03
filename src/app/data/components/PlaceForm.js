@@ -1,6 +1,6 @@
 // components/PlaceForm.js
 import { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import { getSupabase } from '../supabaseClient';
 import DataList from './DataList.js';
 import styles from './Form.module.css';
 
@@ -18,6 +18,7 @@ export default function PlaceForm() {
 
   useEffect(() => {
     async function fetchRegions() {
+      const supabase = getSupabase();
       const { data, error } = await supabase
         .from('region')
         .select('id, name');
@@ -33,9 +34,17 @@ export default function PlaceForm() {
       setMessage("El nombre y la región son requeridos.");
       return;
     }
+    // Sanitizar entradas
+    const safeName = name.trim().replace(/[^\w\sáéíóúÁÉÍÓÚüÜñÑ-]/g, '');
+    const safePrice = price.trim().replace(/[^\d.,]/g, '');
+    const safeSeason = season.trim().replace(/[^\w\sáéíóúÁÉÍÓÚüÜñÑ-]/g, '');
+    const safeInformation = information.trim();
+    const safeRules = rules.trim();
+    const safeAdditionalInformation = additionalInformation.trim();
+    const supabase = getSupabase();
     const { data, error } = await supabase
       .from('place')
-      .insert([{ name, region_id: regionId, price, season, information, rules, additional_information: additionalInformation }], { returning: "representation" })
+      .insert([{ name: safeName, region_id: regionId, price: safePrice, season: safeSeason, information: safeInformation, rules: safeRules, additional_information: safeAdditionalInformation }], { returning: "representation" })
       .select();
     if (error || !data || data.length === 0) {
       setMessage("Error al insertar el lugar: " + (error?.message || "No se devolvieron datos"));

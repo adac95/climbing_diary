@@ -1,6 +1,6 @@
 // components/RouteFormExistingConDeveloper.js
 import { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import { getSupabase } from '../supabaseClient';
 import DataList from './DataList';
 import styles from './Form.module.css';
 
@@ -23,6 +23,7 @@ export default function RouteFormExistingConDeveloper({ onNext }) {
   // Cargar datos existentes de sector, style y developer
   useEffect(() => {
     async function fetchData() {
+      const supabase = getSupabase();
       const { data: secData } = await supabase.from('sector').select('id, name');
       setSectors(secData || []);
       const { data: styData } = await supabase.from('style').select('id, name');
@@ -40,6 +41,7 @@ export default function RouteFormExistingConDeveloper({ onNext }) {
       return;
     }
     // Insertar la ruta y obtener la representación
+    const supabase = getSupabase();
     const { data, error } = await supabase
       .from('route')
       .insert([
@@ -61,6 +63,7 @@ export default function RouteFormExistingConDeveloper({ onNext }) {
     } else {
       const routeId = data[0].id;
       // Insertar la relación en la tabla route_developer
+      const supabase = getSupabase();
       const { error: relError } = await supabase
         .from('route_developer')
         .insert([{ route_id: routeId, developer_id: developerId }]);

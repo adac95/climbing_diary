@@ -1,6 +1,6 @@
 // components/ApproachForm.js
 import { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import { getSupabase } from '../supabaseClient';
 import DataList from './DataList';
 import styles from './Form.module.css';
 
@@ -15,6 +15,7 @@ export default function ApproachForm() {
 
   useEffect(() => {
     async function fetchPlaces() {
+      const supabase = getSupabase();
       const { data, error } = await supabase
         .from('place')
         .select('id, name');
@@ -30,9 +31,14 @@ export default function ApproachForm() {
       setMessage("El lugar es requerido.");
       return;
     }
+    // Sanitizar entradas
+    const safeInformation = information.trim();
+    const safePublicTransport = publicTransport.trim();
+    const safePrivateTransport = privateTransport.trim();
+    const supabase = getSupabase();
     const { data, error } = await supabase
       .from('approach')
-      .insert([{ information, public_transport: publicTransport, private_transport: privateTransport, place_id: placeId }], { returning: "representation" })
+      .insert([{ information: safeInformation, public_transport: safePublicTransport, private_transport: safePrivateTransport, place_id: placeId }], { returning: "representation" })
       .select();
     if (error || !data || data.length === 0) {
       setMessage("Error al insertar approach: " + (error?.message || "No se devolvieron datos"));

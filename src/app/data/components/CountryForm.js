@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabase } from '../supabaseClient';
+import { getSupabase } from '../supabaseClient';
 import DataList from './DataList';
 import styles from './Form.module.css';
 
@@ -14,10 +14,12 @@ export default function CountryForm() {
       setMessage("El nombre del país es requerido.");
       return;
     }
-    // Se usa .select() para forzar la devolución del registro insertado
+    // Sanitizar entrada
+    const safeName = name.trim();
+    const supabase = getSupabase();
     const { data, error } = await supabase
       .from('country')
-      .insert([{ name }], { returning: "representation" })
+      .insert([{ name: safeName }], { returning: "representation" })
       .select();
     if (error || !data || data.length === 0) {
       setMessage("Error al insertar el país: " + (error?.message || "No se devolvieron datos"));

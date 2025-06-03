@@ -1,6 +1,6 @@
 // components/RouteDeveloperForm.js
 import { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import { getSupabase } from '../supabaseClient';
 import DataList from './DataList';
 import styles from './Form.module.css';
 
@@ -13,6 +13,7 @@ export default function RouteDeveloperForm() {
 
   useEffect(() => {
     async function fetchRoutes() {
+      const supabase = getSupabase();
       const { data, error } = await supabase
         .from('route')
         .select('id, name');
@@ -20,6 +21,7 @@ export default function RouteDeveloperForm() {
       else setRoutes(data);
     }
     async function fetchDevelopers() {
+      const supabase = getSupabase();
       const { data, error } = await supabase
         .from('developer')
         .select('id, name');
@@ -36,6 +38,7 @@ export default function RouteDeveloperForm() {
       setMessage("La ruta y el developer son requeridos.");
       return;
     }
+    const supabase = getSupabase();
     const { data, error } = await supabase
       .from('route_developer')
       .insert([{ route_id: routeId, developer_id: developerId }], { returning: "representation" })

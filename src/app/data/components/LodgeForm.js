@@ -1,6 +1,6 @@
 // components/LodgeForm.js
 import { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import { getSupabase } from '../supabaseClient';
 import DataList from './DataList';
 import styles from './Form.module.css';
 
@@ -16,6 +16,7 @@ export default function LodgeForm() {
 
   useEffect(() => {
     async function fetchPlaces() {
+      const supabase = getSupabase();
       const { data, error } = await supabase
         .from('place')
         .select('id, name');
@@ -31,6 +32,7 @@ export default function LodgeForm() {
       setMessage("El lugar es requerido.");
       return;
     }
+    const supabase = getSupabase();
     const { data, error } = await supabase
       .from('lodge')
       .insert([{ is_available: isAvailable, price, name, information, place_id: placeId }], { returning: "representation" })

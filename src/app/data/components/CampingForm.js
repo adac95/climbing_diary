@@ -1,6 +1,6 @@
 // components/CampingForm.js
 import { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import { getSupabase } from '../supabaseClient';
 import DataList from './DataList';
 import styles from './Form.module.css';
 
@@ -16,6 +16,7 @@ export default function CampingForm() {
 
   useEffect(() => {
     async function fetchPlaces() {
+      const supabase = getSupabase();
       const { data, error } = await supabase
         .from('place')
         .select('id, name');
@@ -31,6 +32,7 @@ export default function CampingForm() {
       setMessage("El lugar es requerido.");
       return;
     }
+    const supabase = getSupabase();
     const { data, error } = await supabase
       .from('camping')
       .insert([{ is_available: isAvailable, price, name, information, place_id: placeId }], { returning: "representation" })

@@ -1,6 +1,6 @@
 // components/SectorStyleForm.js
 import { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import { getSupabase } from '../supabaseClient';
 import DataList from './DataList';
 import styles from './Form.module.css';
 
@@ -13,6 +13,7 @@ export default function SectorStyleForm() {
 
   useEffect(() => {
     async function fetchSectors() {
+      const supabase = getSupabase();
       const { data, error } = await supabase
         .from('sector')
         .select('id, name');
@@ -20,6 +21,7 @@ export default function SectorStyleForm() {
       else setSectors(data);
     }
     async function fetchStyles() {
+      const supabase = getSupabase();
       const { data, error } = await supabase
         .from('style')
         .select('id, name');
@@ -36,6 +38,7 @@ export default function SectorStyleForm() {
       setMessage("El sector y el estilo son requeridos.");
       return;
     }
+    const supabase = getSupabase();
     const { data, error } = await supabase
       .from('sector_style')
       .insert([{ sector_id: sectorId, style_id: styleId }], { returning: "representation" })

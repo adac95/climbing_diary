@@ -1,6 +1,6 @@
 // components/RegionForm.js
 import { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import { getSupabase } from '../supabaseClient';
 import DataList from './DataList';
 import styles from './Form.module.css';
 
@@ -15,6 +15,7 @@ export default function RegionForm() {
 
   useEffect(() => {
     async function fetchCountries() {
+      const supabase = getSupabase();
       const { data, error } = await supabase
         .from('country')
         .select('id, name');
@@ -30,9 +31,14 @@ export default function RegionForm() {
       setMessage("El nombre y el país son requeridos.");
       return;
     }
+    // Sanitizar entradas
+    const safeName = name.trim();
+    const safeInformation = information.trim();
+    const safeObs = obs.trim();
+    const supabase = getSupabase();
     const { data, error } = await supabase
       .from('region')
-      .insert([{ name, country_id: countryId, information, obs }], { returning: "representation" })
+      .insert([{ name: safeName, country_id: countryId, information: safeInformation, obs: safeObs }], { returning: "representation" })
       .select();
     if (error || !data || data.length === 0) {
       setMessage("Error al insertar la región: " + (error?.message || "No se devolvieron datos"));

@@ -1,17 +1,11 @@
 import PokedexHeaderHome from "@components/PokedexHeaderHome";
 import PokedexRoute from "@components/PokedexRoute";
-import styles from "./styles.module.css";
-// import { ImageTest } from "@components/ImageTest";
 
-export default async  function Home() {
- 
+export default function Home() {
   return (
-    <section className={styles.container}>
-      
-      <PokedexHeaderHome/>
+    <main>
+      <PokedexHeaderHome />
       <PokedexRoute />
-
-      {/* <ImageTest/> */}
-    </section>
+    </main>
   );
 }

@@ -4,7 +4,6 @@ import Modal from "@components/Modal";
 import RouteDoneModal from "@components/RouteDoneModal";
 
 function RoutesComponent({ routes }) {
-  console.log(routes);
   const [isOpen, setIsOpen] = useState(false);
   const closeModal = () => {
     setIsOpen(false);

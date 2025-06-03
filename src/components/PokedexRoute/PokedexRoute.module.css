@@ -1,20 +1,193 @@
 .container {
-  background-color: aquamarine;
+  background-color: #ffffff;
   width: 100%;
-  height: auto;
-  margin: auto;
-  border: solid 1px gainsboro;
+  max-width: 1000px;
+  margin: 0 auto 1rem;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
-  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-  & .info {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    padding: 3px 5px;
-    justify-content: space-between;
-    align-items: center;
+.container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.info {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Estilos para el nombre de la ruta */
+.routeName {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 0.25rem 0;
+}
+
+/* Estilos para el grado de la ruta */
+.routeGrade {
+  background-color: #f0f9ff;
+  color: #0369a1;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: inline-block;
+  align-self: flex-start;
+  margin: 0;
+}
+
+/* Estilos para el tipo de ruta */
+.routeType {
+  background-color: #f8fafc;
+  color: #475569;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  display: inline-block;
+  align-self: flex-start;
+  margin: 0;
+}
+
+/* Estilos para el estado de la ruta */
+.routeStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #15803d;
+  font-weight: 500;
+  margin: 0.25rem 0;
+}
+
+.statusIcon {
+  font-size: 1rem;
+}
+
+.statusText {
+  font-size: 0.875rem;
+}
+
+/* Estilos para los intentos */
+.routeAttempts {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0.1rem 0;
+}
+
+/* Estilos para la ubicación */
+.routeLocation {
+  color: #64748b;
+  font-style: italic;
+  font-size: 0.875rem;
+  margin: 0.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.locationIcon {
+  font-style: normal;
+  font-size: 1rem;
+}
+
+.locationText {
+  font-style: italic;
+}
+
+/* Estilos para la descripción */
+.routeDescription {
+  color: #475569;
+  line-height: 1.5;
+  margin: 0.5rem 0 0.75rem 0;
+  font-size: 0.9375rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Propiedades estándar para compatibilidad */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 4.5em; /* Aproximadamente 3 líneas con line-height 1.5 */
+  line-clamp: 3;
+}
+
+/* Estilos para el botón */
+button.mediaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #f1f5f9;
+  color: #334155;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0.25rem 0 0 0;
+  align-self: flex-start;
+}
+
+.mediaButton:hover {
+  background-color: #e2e8f0;
+}
+
+.buttonIcon {
+  font-size: 1rem;
+}
+
+.buttonText {
+  font-size: 0.9375rem;
+}
+
+/* Estilos responsivos */
+@media (max-width: 1024px) {
+  .container {
+    max-width: calc(100% - 2rem);
+    margin: 0 auto 1rem;
+  }
+  
+  .info {
+    padding: 1rem;
+  }
+  
+  .routeName {
+    font-size: 1.3rem;
+  }
+  
+  .routeDescription {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    max-height: 3em; /* Aproximadamente 2 líneas con line-height 1.5 */
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    max-width: 100%;
+    margin: 0 0 1rem 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  
+  .routeName {
+    font-size: 1.2rem;
+  }
+  
+  .routeDescription {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    max-height: 4.5em; /* Aproximadamente 3 líneas con line-height 1.5 */
   }
 }

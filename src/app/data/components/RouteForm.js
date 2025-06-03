@@ -1,6 +1,6 @@
 // components/RouteForm.js
 import { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import { getSupabase } from '../supabaseClient';
 import DataList from './DataList';
 import styles from './Form.module.css';
 
@@ -36,6 +36,7 @@ export default function RouteForm() {
   // Cargar países, estilos y developers al montar el componente
   useEffect(() => {
     async function fetchInitialData() {
+      const supabase = getSupabase();
       const { data: countriesData, error: countriesError } = await supabase
         .from('country')
         .select('id, name');
@@ -65,6 +66,7 @@ export default function RouteForm() {
         setRegionId('');
         return;
       }
+      const supabase = getSupabase();
       const { data, error } = await supabase
         .from('region')
         .select('id, name')
@@ -87,6 +89,7 @@ export default function RouteForm() {
         setPlaceId('');
         return;
       }
+      const supabase = getSupabase();
       const { data, error } = await supabase
         .from('place')
         .select('id, name')
@@ -108,6 +111,7 @@ export default function RouteForm() {
         setSectorId('');
         return;
       }
+      const supabase = getSupabase();
       const { data, error } = await supabase
         .from('sector')
         .select('id, name')
@@ -133,6 +137,7 @@ export default function RouteForm() {
       return;
     }
     // Insertar la ruta
+    const supabase = getSupabase();
     const { data, error } = await supabase
       .from('route')
       .insert([

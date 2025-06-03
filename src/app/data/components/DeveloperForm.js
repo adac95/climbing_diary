@@ -1,6 +1,6 @@
 // components/DeveloperForm.js
 import { useState } from 'react';
-import { supabase } from '../supabaseClient';
+import { getSupabase } from '../supabaseClient';
 import DataList from './DataList';
 import styles from './Form.module.css';
 
@@ -15,6 +15,7 @@ export default function DeveloperForm() {
       setMessage("El nombre del developer es requerido.");
       return;
     }
+    const supabase = getSupabase();
     const { data, error } = await supabase
       .from('developer')
       .insert([{ name }], { returning: "representation" })

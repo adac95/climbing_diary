@@ -1,6 +1,6 @@
 // components/SectorForm.js
 import { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import { getSupabase } from '../supabaseClient';
 import DataList from './DataList';
 import styles from './Form.module.css';
 
@@ -14,6 +14,7 @@ export default function SectorForm() {
 
   useEffect(() => {
     async function fetchPlaces() {
+      const supabase = getSupabase();
       const { data, error } = await supabase
         .from('place')
         .select('id, name');
@@ -29,6 +30,7 @@ export default function SectorForm() {
       setMessage("El nombre y el lugar son requeridos.");
       return;
     }
+    const supabase = getSupabase();
     const { data, error } = await supabase
       .from('sector')
       .insert([{ name, place_id: placeId, approach }], { returning: "representation" })

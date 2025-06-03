@@ -1,6 +1,6 @@
 // components/StyleForm.js
 import { useState } from 'react';
-import { supabase } from '../supabaseClient';
+import { getSupabase } from '../supabaseClient';
 import DataList from './DataList';
 import styles from './Form.module.css';
 
@@ -9,23 +9,35 @@ export default function StyleForm() {
   const [message, setMessage] = useState('');
   const [insertedStyle, setInsertedStyle] = useState(null);
 
+  // Función para sanitizar y validar el nombre
+  function sanitizeName(input) {
+    return input.replace(/[^\w\sáéíóúÁÉÍÓÚüÜñÑ-]/g, '').trim();
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name) {
-      setMessage("El nombre del estilo es requerido.");
+    const safeName = sanitizeName(name);
+    if (!safeName) {
+      setMessage("El nombre del estilo es requerido y debe ser válido.");
       return;
     }
-    const { data, error } = await supabase
-      .from('style')
-      .insert([{ name }], { returning: "representation" })
-      .select();
-    if (error || !data || data.length === 0) {
-      setMessage("Error al insertar el estilo: " + (error?.message || "No se devolvieron datos"));
-      console.error(error);
-    } else {
-      setInsertedStyle(data[0]);
-      setMessage("Estilo insertado correctamente.");
-      setName('');
+    try {
+      const supabase = getSupabase();
+      const { data, error } = await supabase
+        .from('style')
+        .insert([{ name: safeName }], { returning: "representation" })
+        .select();
+      if (error || !data || data.length === 0) {
+        setMessage("Error al insertar el estilo: " + (error?.message || "No se devolvieron datos"));
+        console.error(error);
+      } else {
+        setInsertedStyle(data[0]);
+        setMessage("Estilo insertado correctamente.");
+        setName('');
+      }
+    } catch (err) {
+      setMessage("Error inesperado al insertar el estilo.");
+      console.error(err);
     }
   };
 

@@ -1,6 +1,6 @@
 // components/DataList.js
 import { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import { getSupabase } from '../supabaseClient';
 import styles from './Form.module.css';
 
 export default function DataList({ tableName, title, columns }) {
@@ -11,6 +11,7 @@ export default function DataList({ tableName, title, columns }) {
   // Función para obtener los registros iniciales
   const fetchRecords = async () => {
     setLoading(true);
+    const supabase = getSupabase();
     const { data, error } = await supabase
       .from(tableName)
       .select('*');
@@ -26,6 +27,7 @@ export default function DataList({ tableName, title, columns }) {
     fetchRecords();
 
     // Crear canal de suscripción en tiempo real usando la API de Supabase v2
+    const supabase = getSupabase();
     const channel = supabase.channel(`realtime-${tableName}`)
       .on(
         'postgres_changes',
@@ -58,7 +60,7 @@ export default function DataList({ tableName, title, columns }) {
 
     // Limpieza al desmontar el componente
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) supabase.removeChannel(channel);
     };
   }, [tableName]);
 
