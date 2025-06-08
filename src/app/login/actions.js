@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@utils/supabase/server';
+import { createSupabaseServerClient } from '@utils/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -70,7 +70,7 @@ export async function login(formData) {
     }
 
     console.log('🔑 Creando cliente Supabase...');
-    const supabase = await createClient();
+    const supabase = await createSupabaseServerClient();
     
     console.log('🔐 Iniciando sesión con Supabase...');
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -157,7 +157,7 @@ export async function signup(formData) {
   if (passwordError) return { error: passwordError };
 
   try {
-    const supabase = await createClient();
+    const supabase = await createSupabaseServerClient();
     const { error } = await supabase.auth.signUp({
       email,
       password,

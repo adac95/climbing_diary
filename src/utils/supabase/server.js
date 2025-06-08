@@ -1,41 +1,129 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
-// Asegura que las variables de entorno estén definidas
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  throw new Error('❌ Las variables de entorno de Supabase no están definidas. Verifica NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY.');
-}
-
-export async function createClient() {
-  const cookieStore = await cookies();
-
+export const createSupabaseServerClient = async () => {
   try {
+    const cookieStore =  await cookies()
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error('Variables de entorno de Supabase no definidas')
+    }
+
     return createServerClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY,
+      supabaseUrl,
+      supabaseAnonKey,
       {
         cookies: {
-          getAll() {
-            return cookieStore.getAll();
-          },
-          setAll(cookiesToSet) {
+          get(name) {
             try {
-              cookiesToSet.forEach(({ name, value, options }) =>
-                cookieStore.set(name, value, options)
-              );
-            } catch {
-              // Puede ser llamado desde un Server Component, ignorar si hay middleware refrescando sesión
+              return cookieStore.get(name)?.value ?? null
+            } catch (error) {
+              console.error('Error al leer cookie en el servidor:', error)
+              return null
+            }
+          },
+          set(name, value, options) {
+            try {
+              cookieStore.set({
+                name,
+                value,
+                ...options,
+                sameSite: 'lax',
+                secure: process.env.NODE_ENV === 'production',
+                httpOnly: true,
+                path: '/'
+              })
+            } catch (error) {
+              console.error('Error al establecer cookie en el servidor:', error)
+            }
+          },
+          remove(name, options) {
+            try {
+              cookieStore.set({
+                name,
+                value: '',
+                ...options,
+                maxAge: 0,
+                path: '/',
+                sameSite: 'lax',
+                secure: process.env.NODE_ENV === 'production',
+              })
+            } catch (error) {
+              console.error('Error al eliminar cookie en el servidor:', error)
             }
           },
         },
+        auth: {
+          autoRefreshToken: true,
+          persistSession: true,
+          detectSessionInUrl: false,
+          flowType: 'pkce',
+        },
+        global: {
+          headers: {
+            'x-application-name': 'climbing-diary'
+          }
+        }
       }
-    );
+    )
   } catch (error) {
-    // Mejor manejo de errores
-    console.error('Error inicializando Supabase Client:', error);
-    throw new Error('No se pudo inicializar el cliente de Supabase.');
+    console.error('Error al crear el cliente de Supabase en el servidor:', error)
+    throw error
+  }
+}
+
+// Función de ayuda para verificar la autenticación en Server Components
+export async function requireAuth() {
+  try {
+    const supabase = await createSupabaseServerClient()
+    const { data: { session }, error } = await supabase.auth.getSession()
+
+    if (error) {
+      console.error('Error al obtener la sesión:', error)
+      throw new Error('Error de autenticación')
+    }
+
+    if (!session) {
+      throw new Error('No autorizado')
+    }
+
+    // Verificar si la sesión está activa y no ha expirado
+    const now = Math.floor(Date.now() / 1000)
+    if (session.expires_at && session.expires_at < now) {
+      throw new Error('Sesión expirada')
+    }
+
+    return { 
+      session, 
+      supabase,
+      user: session.user
+    }
+  } catch (error) {
+    console.error('Error en requireAuth:', error)
+    throw new Error(error.message || 'No autorizado')
+  }
+}
+
+// Función de ayuda para verificar roles y permisos
+export async function checkUserRole(roleRequired) {
+  try {
+    const { user, supabase } = await requireAuth()
+    
+    // Obtener roles del usuario desde la tabla de perfiles
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (error) throw error
+
+    return profile?.role === roleRequired
+  } catch (error) {
+    console.error('Error al verificar rol:', error)
+    return false
   }
 }

@@ -31,14 +31,23 @@ const ChevronDown = () => (
   </svg>
 );
 import styles from "./Header.module.css";
-import { createClient } from "@utils/supabase/client";
+import { getSupabase } from "@utils/supabase/client";
 import { useRouter } from "next/navigation";
 
 export default function UserMenu({ user }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [supabase, setSupabase] = useState(null);
   const menuRef = useRef(null);
   const router = useRouter();
-  const supabase = createClient();
+
+  useEffect(() => {
+    // Inicializar Supabase solo en el cliente
+    try {
+      setSupabase(getSupabase());
+    } catch (error) {
+      console.error('Error al inicializar Supabase:', error);
+    }
+  }, []);
 
   // Función para manejar el cierre del menú al hacer clic fuera
   const handleClickOutside = useCallback(
@@ -67,9 +76,19 @@ export default function UserMenu({ user }) {
   }, []);
 
   const handleLogout = useCallback(async () => {
-    await supabase.auth.signOut();
+    if (!supabase) {
+      console.error('Cliente Supabase no inicializado');
+      return;
+    }
+    
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
     router.refresh();
-  }, [router, supabase.auth]);
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
+  }, [router, supabase]);
 
   // Obtener la inicial del nombre de usuario o correo
   const getUserInitials = () => {

@@ -1,142 +1,104 @@
 'use server';
 
-import { createClient } from '@utils/supabase/server';
-import { isValidEmail, isStrongPassword } from '@utils/security';
-
-// Tiempo mínimo de espera para prevenir ataques de fuerza bruta (en ms)
-const MIN_AUTH_DELAY = 500;
+import AuthService from '@/services/auth.service';
+import { AUTH_CONFIG } from '@/config/auth/server/security';
+import { ERROR_MESSAGES } from '@/config/auth/server/security';
+import { rateLimit } from '@/utils/security';
 
 // Control de intentos de inicio de sesión
 const loginAttempts = new Map();
-const MAX_ATTEMPTS = 5;
-const LOCKOUT_TIME = 15 * 60 * 1000; // 15 minutos
 
-export const loginAction = async (formData) => {
+// Función para obtener la IP del cliente
+const getClientIP = () => {
+  // Implementar lógica para obtener IP del cliente
+  return '127.0.0.1';
+};
+
+export async function loginAction(formData) {
   const startTime = Date.now();
-  const ip = formData.get('_ip') || 'unknown';
-  const userAgent = formData.get('_ua') || 'unknown';
+  const ip = getClientIP();
+  const attemptKey = `${ip}:login`;
   
-  // Validar datos de entrada
-  const email = formData.get('email')?.toString().trim() || '';
-  const password = formData.get('password')?.toString() || '';
-  
-  // Validaciones básicas
-  if (!email || !password) {
-    return { 
-      success: false, 
-      error: 'Email y contraseña son requeridos',
-      code: 'MISSING_CREDENTIALS'
-    };
-  }
-  
-  if (!isValidEmail(email)) {
-    return { 
-      success: false, 
-      error: 'El formato del correo electrónico no es válido',
-      code: 'INVALID_EMAIL'
-    };
-  }
-  
-  // Verificar intentos fallidos
-  const attemptKey = `${ip}:${email}`;
+  // Verificar bloqueo por intentos fallidos
   const attempts = loginAttempts.get(attemptKey) || { count: 0, lastAttempt: 0 };
-  
-  // Limpiar intentos antiguos
-  if (Date.now() - attempts.lastAttempt > LOCKOUT_TIME) {
+  if (attempts.count >= AUTH_CONFIG.MAX_ATTEMPTS) {
+    const timeElapsed = Date.now() - attempts.lastAttempt;
+    if (timeElapsed < AUTH_CONFIG.LOCKOUT_TIME) {
+      const minutesLeft = Math.ceil((AUTH_CONFIG.LOCKOUT_TIME - timeElapsed) / 60000);
+      return {
+        success: false,
+        error: `Cuenta bloqueada temporalmente. Intenta de nuevo en ${minutesLeft} minutos.`,
+        code: 'ACCOUNT_LOCKED'
+      };
+    }
+    // Resetear intentos si ya pasó el tiempo de bloqueo
     loginAttempts.delete(attemptKey);
-  } else if (attempts.count >= MAX_ATTEMPTS) {
-    const timeLeft = Math.ceil((attempts.lastAttempt + LOCKOUT_TIME - Date.now()) / 60000);
-    return { 
-      success: false, 
-      error: `Demasiados intentos fallidos. Intenta de nuevo en ${timeLeft} minutos.`,
-      code: 'TOO_MANY_ATTEMPTS'
+  }
+
+  // Validar rate limiting
+  try {
+    await rateLimit(ip);
+  } catch (error) {
+    return {
+      success: false,
+      error: ERROR_MESSAGES.RATE_LIMIT,
+      code: 'RATE_LIMIT'
     };
   }
+
+  // Validar datos del formulario
+  const email = formData.get('email');
+  const password = formData.get('password');
   
+  if (!email || !password) {
+    return {
+      success: false,
+      error: 'Email y contraseña son requeridos.',
+      code: 'VALIDATION_ERROR'
+    };
+  }
+
   try {
-    // Crear cliente Supabase
-    const supabase = await createClient();
-    if (!supabase) {
-      throw new Error('No se pudo inicializar el cliente de Supabase');
-    }
-    
-    // Intentar autenticación
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    
-    // Manejar errores de autenticación
-    if (error) {
+    const result = await AuthService.loginWithCredentials({ email, password });
+
+    if (!result.success) {
       // Registrar intento fallido
       const newAttempts = {
         count: attempts.count + 1,
         lastAttempt: Date.now()
       };
       loginAttempts.set(attemptKey, newAttempts);
-      
-      // Mensajes de error específicos
-      let errorMessage = 'Credenciales inválidas. Por favor, inténtalo de nuevo.';
-      let errorCode = 'AUTH_ERROR';
-      
-      if (error.message.includes('Invalid login credentials')) {
-        errorMessage = 'Correo electrónico o contraseña incorrectos.';
-        errorCode = 'INVALID_CREDENTIALS';
-      } else if (error.message.includes('Email not confirmed')) {
-        errorMessage = 'Por favor, verifica tu correo electrónico antes de iniciar sesión.';
-        errorCode = 'EMAIL_NOT_VERIFIED';
-      } else if (error.message.includes('Too many requests')) {
-        errorMessage = 'Demasiados intentos. Por favor, espera un momento antes de intentar de nuevo.';
-        errorCode = 'RATE_LIMIT_EXCEEDED';
+
+      // Verificar si debemos bloquear la cuenta
+      if (newAttempts.count >= AUTH_CONFIG.MAX_ATTEMPTS) {
+        return {
+          success: false,
+          error: ERROR_MESSAGES.ACCOUNT_LOCKED,
+          code: 'ACCOUNT_LOCKED'
+        };
       }
-      
-      return { 
-        success: false, 
-        error: errorMessage,
-        code: errorCode
-      };
+
+      return result;
     }
-    
-    // Verificar sesión
-    if (!data?.session) {
-      return { 
-        success: false, 
-        error: 'No se pudo iniciar sesión. Por favor, inténtalo de nuevo.',
-        code: 'SESSION_ERROR'
-      };
-    }
-    
+
     // Limpiar intentos fallidos en éxito
     loginAttempts.delete(attemptKey);
-    
-    // Registrar inicio de sesión exitoso
-    console.log(`✅ Inicio de sesión exitoso para ${email} desde ${ip}`);
-    
-    // Asegurar un tiempo mínimo de respuesta para prevenir ataques de tiempo
+
+    // Asegurar tiempo mínimo de respuesta para prevenir timing attacks
     const elapsed = Date.now() - startTime;
-    if (elapsed < MIN_AUTH_DELAY) {
-      await new Promise(resolve => setTimeout(resolve, MIN_AUTH_DELAY - elapsed));
+    if (elapsed < AUTH_CONFIG.MIN_AUTH_DELAY) {
+      await new Promise(resolve => setTimeout(resolve, AUTH_CONFIG.MIN_AUTH_DELAY - elapsed));
     }
-    
-    return { 
-      success: true,
-      userId: data.user.id,
-      email: data.user.email
-    };
-    
+
+    return result;
   } catch (error) {
-    console.error('Error en la autenticación:', {
-      error: error.message,
-      stack: error.stack,
-      email,
-      ip,
-      userAgent
-    });
+    console.error('Error inesperado en login:', error);
     
-    return { 
-      success: false, 
-      error: 'Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo más tarde.',
-      code: 'SERVER_ERROR'
+    return {
+      success: false,
+      error: ERROR_MESSAGES.SERVER_ERROR,
+      code: 'SERVER_ERROR',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     };
   }
-};
+}

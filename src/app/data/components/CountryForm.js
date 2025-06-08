@@ -1,36 +1,16 @@
-import { useState } from 'react';
-import { getSupabase } from '../supabaseClient';
 import DataList from './DataList';
-import styles from './Form.module.css';
+import { validators } from '@utils/validation';
+import { withDataForm } from './FormHOC';
 
-export default function CountryForm() {
-  const [name, setName] = useState('');
-  const [message, setMessage] = useState('');
-  const [insertedCountry, setInsertedCountry] = useState(null);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!name) {
-      setMessage("El nombre del país es requerido.");
-      return;
-    }
-    // Sanitizar entrada
-    const safeName = name.trim();
-    const supabase = getSupabase();
-    const { data, error } = await supabase
-      .from('country')
-      .insert([{ name: safeName }], { returning: "representation" })
-      .select();
-    if (error || !data || data.length === 0) {
-      setMessage("Error al insertar el país: " + (error?.message || "No se devolvieron datos"));
-      console.error(error);
-    } else {
-      setInsertedCountry(data[0]);
-      setMessage("País insertado correctamente.");
-      setName('');
-    }
-  };
-
+function CountryFormComponent({
+  formData,
+  handleChange,
+  handleSubmit,
+  error,
+  message,
+  insertedData,
+  styles
+}) {
   return (
     <div>
       <form className={styles.form} onSubmit={handleSubmit}>
@@ -39,21 +19,42 @@ export default function CountryForm() {
           Nombre:
           <input
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className={styles.input}
+            value={formData.name || ''}
+            onChange={handleChange('name')}
+            className={`${styles.input} ${error ? styles.inputError : ''}`}
             required
+            maxLength={100}
+            aria-invalid={!!error}
+            aria-describedby={error ? "name-error" : undefined}
           />
         </label>
-        <button type="submit" className={styles.button}>Insertar País</button>
-        {message && <p className={styles.message}>{message}</p>}
+        
+        {error && (
+          <p id="name-error" className={styles.error} role="alert">
+            {error}
+          </p>
+        )}
+        
+        {message && (
+          <p className={styles.success} role="status">
+            {message}
+          </p>
+        )}
+        
+        <button 
+          type="submit" 
+          className={styles.button}
+          disabled={!formData.name?.trim()}
+        >
+          Insertar País
+        </button>
       </form>
 
-      {insertedCountry && (
-        <div className={styles.insertedData}>
+      {insertedData && (
+        <div className={styles.insertedData} role="region" aria-label="País creado">
           <h3>País creado:</h3>
-          <p><strong>ID:</strong> {insertedCountry.id}</p>
-          <p><strong>Nombre:</strong> {insertedCountry.name}</p>
+          <p><strong>ID:</strong> {insertedData.id}</p>
+          <p><strong>Nombre:</strong> {insertedData.name}</p>
         </div>
       )}
 
@@ -64,3 +65,15 @@ export default function CountryForm() {
     </div>
   );
 }
+
+// Configuración del formulario
+const countryFormConfig = {
+  tableName: 'country',
+  title: 'País',
+  validationSchema: {
+    name: validators.name
+  }
+};
+
+// Exportar el componente envuelto con el HOC
+export default withDataForm(CountryFormComponent, countryFormConfig);

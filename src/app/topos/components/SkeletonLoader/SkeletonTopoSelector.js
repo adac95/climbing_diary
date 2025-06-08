@@ -4,27 +4,43 @@ import { useParams } from "next/navigation";
 import styles from "./skeletonTopoSelector.module.css";
 
 export default function SkeletonTopoSelector() {
-  const params = useParams();
-  const { regionId } = params;
-  const showTwoInputs = regionId != undefined || null || ''
+  const { regionId } = useParams();
+  const showTwoInputs = Boolean(regionId);
 
   return (
     <div className={styles.container}>
-      <div className={styles.labelSkeleton}></div>
-
-      <div className={styles.inputSkeleton}>
-        <div className={styles.textSkeleton}></div>
-        <div className={styles.iconSkeleton}></div>
-      </div>
-
-      {showTwoInputs && (
-        <>
-          <div className={styles.inputSkeleton}>
-            <div className={styles.textSkeleton}></div>
-            <div className={styles.iconSkeleton}></div>
+      <h3 className={styles.h3}>Escoge el lugar</h3>
+      <section className={styles.options}>
+        {/* Selector de Región - Siempre visible */}
+        <div className={styles.selectorContainer}>
+          <div className={styles.selectWrapper}>
+            <div className={styles.selectContent}>
+              <div className={styles.selectSkeleton}>
+                <div className={styles.selectInner}>
+                  <div className={styles.selectText}></div>
+                  <div className={styles.selectIcon}></div>
+                </div>
+              </div>
+            </div>
           </div>
-        </>
-      )}
+        </div>
+
+        {/* Selector de Lugar - Condicional */}
+        {showTwoInputs && (
+          <div className={styles.selectorContainer}>
+            <div className={styles.selectWrapper}>
+              <div className={styles.selectContent}>
+                <div className={styles.selectSkeleton}>
+                  <div className={styles.selectInner}>
+                    <div className={styles.selectText}></div>
+                    <div className={styles.selectIcon}></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
     </div>
   );
 }

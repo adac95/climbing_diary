@@ -1,6 +1,6 @@
 // components/PlaceForm.js
 import { useState, useEffect } from 'react';
-import { getSupabase } from '../supabaseClient';
+import { getSupabase } from '@utils/supabase/client';
 import DataList from './DataList.js';
 import styles from './Form.module.css';
 
@@ -18,12 +18,21 @@ export default function PlaceForm() {
 
   useEffect(() => {
     async function fetchRegions() {
-      const supabase = getSupabase();
-      const { data, error } = await supabase
-        .from('region')
-        .select('id, name');
-      if (error) console.error("Error fetching regions:", error);
-      else setRegions(data);
+      try {
+        const supabase = getSupabase();
+        const { data, error } = await supabase
+          .from('region')
+          .select('id, name');
+        
+        if (error) {
+          console.error("Error fetching regions:", error);
+          return;
+        }
+        
+        setRegions(data);
+      } catch (err) {
+        console.error("Error unexpected:", err);
+      }
     }
     fetchRegions();
   }, []);

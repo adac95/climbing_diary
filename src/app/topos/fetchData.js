@@ -1,21 +1,15 @@
 "use server";
 
-import { createClient } from "@utils/supabase/server";
+import { createSupabaseServerClient } from "@utils/supabase/server";
 
 export async function getAllRegions() {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
   const { data } = await supabase.from("region").select();
   return data;
 }
 
-export async function getRegionById(regionId) {
-  const supabase = await createClient();
-  const { data } = await supabase.from("region").select().eq("id", regionId);
-  return data;
-}
-
 export async function getAllPlaces() {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from("place")
     .select(
@@ -25,8 +19,14 @@ export async function getAllPlaces() {
   return data;
 }
 
+export async function getRegionById(regionId) {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase.from("region").select().eq("id", regionId);
+  return data;
+}
+
 export async function getPlaceById(placeId) {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from("place")
     .select(
@@ -37,7 +37,7 @@ export async function getPlaceById(placeId) {
 }
 
 export async function getPlacesByRegionId(regionId) {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from("place")
     .select(
@@ -48,13 +48,13 @@ export async function getPlacesByRegionId(regionId) {
 }
 
 export async function getAllSectors() {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
   const { data } = await supabase.from("sector").select();
   return data;
 }
 
 export async function getSectorsByPlaceId(placeId) {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from("sector")
     .select("*, sector_style(style_id(name))")
@@ -63,7 +63,7 @@ export async function getSectorsByPlaceId(placeId) {
 }
 
 export async function getAllRoutes() {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.from("route").select(
     `
                    id,

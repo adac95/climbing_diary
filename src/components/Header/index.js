@@ -6,12 +6,12 @@ import Image from "next/image";
 import UserMenu from "./UserMenu";
 import styles from "./Header.module.css";
 import logoImg from "../../public/assets/image.png";
-import { createClient } from "@utils/supabase/server";
+import { createSupabaseServerClient } from "@utils/supabase/server";
 
 const Header = async () => {
   let user = null;
   try {
-    const supabase = await createClient();
+    const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase.auth.getUser();
     if (error) {
       // Opcional: loguear el error en un sistema externo

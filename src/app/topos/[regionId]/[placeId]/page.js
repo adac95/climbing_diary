@@ -1,22 +1,50 @@
 import Link from "next/link";
 import OptionsTopoToRender from "../../components/OptionsTopoToRender";
 import { PlaceToRender } from "../../components/PlaceToRender";
-import { getPlaceById } from "../../fetchData";
-import { Suspense } from "react";
+import { getAllPlaces } from "../../fetchData";
 import styles from "./PlacePage.module.css";
+import { notFound } from "next/navigation";
 
+// ISR: Revalidar cada 24 horas
+export const revalidate = 86400;
+
+// ⚙️ Generar rutas estáticas
+// export async function generateStaticParams() {
+//   const places = await getAllPlaces();
+
+//   return places.map((place) => ({
+//     regionId: place.region_id,
+//     placeId: place.id,
+//   }));
+// }
+
+// 🧠 Metadata dinámica por lugar
+export async function generateMetadata({ params }) {
+  const param = await params;   
+  const places = await getAllPlaces();
+  const place = places.find((p) => p.id === param.placeId);
+
+  return {
+    title: place?.name || "Lugar",
+    description: place?.description || "Descripción del lugar",
+  };
+}
+
+// 🧱 Página principal
 export default async function PlacePage({ params }) {
   const { regionId, placeId } = await params;
-const place = await getPlaceById(placeId);
+
+  const places = await getAllPlaces();
+  const place = places.find((p) => p.id === placeId);
+
+  if (!place) return notFound(); // Usa el sistema de error 404 de Next.js
 
   return (
-    <Suspense fallback={<p>Cargando place...</p>}>
-      <div className={styles.container}>
-        <Link href={`/topos/${regionId}/${placeId}/sectores`}>
-          <OptionsTopoToRender name='Ver sectores' />
-        </Link>
-        <PlaceToRender place={place[0]} />
-      </div>
-    </Suspense>
+    <div className={styles.container}>
+      <Link href={`/topos/${regionId}/${placeId}/sectores`}>
+        <OptionsTopoToRender name="Ver sectores" style={{ width: "150%" }} />
+      </Link>
+      <PlaceToRender place={place} />
+    </div>
   );
 }

@@ -64,21 +64,39 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // Aplicar a todas las rutas
-        source: '/(.*)',
-        headers: securityHeaders.filter(header => header.key !== 'Content-Security-Policy'),
-      },
-      // CSP se maneja por separado para mejor compatibilidad
-      {
-        source: '/(.*)',
+        source: '/:path*',
         headers: [
           {
-            key: 'Content-Security-Policy',
-            value: securityHeaders.find(h => h.key === 'Content-Security-Policy')?.value || '',
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
           },
-        ],
-      },
-    ];
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload'
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block'
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin'
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
+          }
+        ]
+      }
+    ]
   },
 };
 

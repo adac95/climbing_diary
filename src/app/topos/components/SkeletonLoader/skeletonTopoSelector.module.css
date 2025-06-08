@@ -2,56 +2,80 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 10px;
   margin: auto;
   padding: 7px 0;
 }
 
-.labelSkeleton {
-  height: 12px;
-  width: 100px;
-  background-color: #e2e2e2;
-  margin: 0 0 0 8px;
-  border-radius: var(--border-radius);
-  animation: pulse 1.5s infinite ease-in-out;
+.h3 {
+  letter-spacing: 0.2rem;
+  margin: 0 0 -8px 8px;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #666;
 }
 
-.inputSkeleton {
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selectorContainer,
+.selectWrapper,
+.selectContent {
+  position: relative;
   width: 100%;
-  height: 38px;
+}
+
+.selectSkeleton {
+  width: 100%;
+  height: 40px;
+  background: #ffffff;
   border: 1px solid #e0e0e0;
-  border-radius: 6px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.selectInner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-sm) var(--spacing-lg);
-  background-color: white;
+  padding: 8px 12px;
+  height: 100%;
 }
 
-.textSkeleton {
+.selectText {
+  width: 70%;
   height: 16px;
-  width: 96px;
-  background-color: #e2e2e2;
+  background: #f0f0f0;
   border-radius: 4px;
   animation: pulse 1.5s infinite ease-in-out;
 }
 
-.iconSkeleton {
-  height: 24px;
-  width: 24px;
-  background-color: #e2e2e2;
-  border-radius: 50%;
+.selectIcon {
+  width: 16px;
+  height: 16px;
+  background: #f0f0f0;
+  border-radius: 4px;
   animation: pulse 1.5s infinite ease-in-out;
 }
 
 @keyframes pulse {
   0% {
-    opacity: 0.6;
-  }
-  50% {
     opacity: 1;
   }
-  100% {
-    opacity: 0.6;
+  50% {
+    opacity: 0.5;
   }
+  100% {
+    opacity: 1;
+  }
+}
+
+.selectSkeleton,
+.selectInner,
+.selectText,
+.selectIcon {
+  transition: all 0.2s ease-in-out;
 }

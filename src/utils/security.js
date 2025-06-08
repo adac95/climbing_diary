@@ -1,109 +1,209 @@
-// Configuración de seguridad centralizada
+import { AUTH_CONFIG } from '@/config/auth/server/security';
 
-export const securityHeaders = {
-  // Prevención de clickjacking
-  frameOptions: 'DENY',
-  
-  // Prevención de MIME type sniffing
-  contentTypeOptions: 'nosniff',
-  
-  // Política de referer estricta
-  referrerPolicy: 'strict-origin-when-cross-origin',
-  
-  // Política de permisos
-  permissionsPolicy: 'camera=(), microphone=(), geolocation=()',
-  
+/**
+ * Configuración centralizada de seguridad
+ */
+export const securityConfig = {
+  headers: {
+    // Headers de seguridad básicos
+    'X-Frame-Options': 'DENY',
+    'X-Content-Type-Options': 'nosniff',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+    
+    // Content Security Policy
+    'Content-Security-Policy': [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline'",
+      "style-src 'self' 'unsafe-inline'",
+      `connect-src 'self' ${process.env.NEXT_PUBLIC_SUPABASE_URL}`,
+      "img-src 'self' data: https:",
+      "font-src 'self'",
+      "object-src 'none'",
+      "media-src 'none'",
+      "frame-src 'none'"
+    ].join('; '),
+
+    // HSTS
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload'
+  },
+
   // Configuración de CORS
   cors: {
     origin: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
+    credentials: true,
+    maxAge: 86400 // 24 horas
   },
-  
-  // Configuración de cookies seguras
+
+  // Configuración de cookies
   cookies: {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 60 * 60 * 24 * 7, // 1 semana
+    // Cookies de sesión
+    session: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: AUTH_CONFIG.SESSION_TTL
+    },
+    // Cookies de refresh token
+    refresh: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: AUTH_CONFIG.REFRESH_TOKEN_TTL
+    }
   },
-  
+
   // Configuración de rate limiting
   rateLimit: {
-    windowMs: 15 * 60 * 1000, // 15 minutos
-    max: 100, // Límite de 100 peticiones por ventana
-    message: 'Demasiadas peticiones desde esta IP, por favor inténtalo de nuevo más tarde.'
+    // Ventana global
+    global: {
+      windowMs: 15 * 60 * 1000, // 15 minutos
+      max: 100 // Límite de peticiones por ventana
+    },
+    // Ventana específica para autenticación
+    auth: {
+      windowMs: 60 * 60 * 1000, // 1 hora
+      max: 5 // 5 intentos por hora
+    }
+  },
+
+  // Validaciones de seguridad
+  validation: {
+    password: {
+      minLength: 12,
+      requireUppercase: true,
+      requireLowercase: true,
+      requireNumbers: true,
+      requireSpecialChars: true,
+      maxLength: 128
+    },
+    email: {
+      maxLength: 254, // RFC 5321
+      pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    },
+    username: {
+      minLength: 3,
+      maxLength: 30,
+      pattern: /^[a-zA-Z0-9_-]+$/
+    }
+  },
+
+  // Configuración de sanitización
+  sanitization: {
+    allowedTags: ['b', 'i', 'em', 'strong', 'a'],
+    allowedAttributes: {
+      'a': ['href', 'target']
+    }
+  },
+
+  // Configuración de encriptación
+  encryption: {
+    algorithm: 'aes-256-gcm',
+    keyLength: 32,
+    ivLength: 16,
+    saltLength: 64
   }
 };
 
-// Validación de email
-export function isValidEmail(email) {
-  const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return re.test(String(email).toLowerCase());
-}
+/**
+ * Funciones de utilidad para seguridad
+ */
+export const securityUtils = {
+  /**
+   * Valida una contraseña según los criterios de seguridad
+   */
+  validatePassword(password) {
+    const { validation: { password: rules } } = securityConfig;
+    
+    return {
+      isValid: 
+        password.length >= rules.minLength &&
+        password.length <= rules.maxLength &&
+        /[A-Z]/.test(password) &&
+        /[a-z]/.test(password) &&
+        /[0-9]/.test(password) &&
+        /[!@#$%^&*(),.?":{}|<>]/.test(password),
+      errors: []
+    };
+  },
 
-// Validación de contraseña
-export function isStrongPassword(password) {
-  // Al menos 8 caracteres, una letra mayúscula, una minúscula, un número y un carácter especial
-  const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-  return re.test(password);
-}
+  /**
+   * Sanitiza texto para prevenir XSS
+   */
+  sanitizeInput(input) {
+    // Implementar sanitización según configuración
+    return input.replace(/[<>]/g, '');
+  },
 
-// Generador de tokens CSRF
-export function generateCsrfToken() {
-  return Array.from(crypto.getRandomValues(new Uint8Array(32)))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-}
+  /**
+   * Genera un token seguro
+   */
+  generateSecureToken(length = 32) {
+    return crypto.getRandomValues(new Uint8Array(length))
+      .reduce((acc, val) => acc + val.toString(16).padStart(2, '0'), '');
+  }
+};
 
-// Middleware de seguridad para rutas de API
-export async function secureApiRoute(handler) {
-  return async (req, res) => {
-    // Verificar el método HTTP
-    if (req.method !== 'POST' && req.method !== 'GET') {
-      return new Response(
-        JSON.stringify({ error: 'Método no permitido' }),
-        { status: 405, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Verificar el encabezado Content-Type para solicitudes POST
-    if (req.method === 'POST' && !req.headers.get('content-type')?.includes('application/json')) {
-      return new Response(
-        JSON.stringify({ error: 'Content-Type debe ser application/json' }),
-        { status: 415, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Aplicar encabezados de seguridad
-    const headers = new Headers({
-      'Content-Type': 'application/json',
-      'X-Content-Type-Options': securityHeaders.contentTypeOptions,
-      'X-Frame-Options': securityHeaders.frameOptions,
-      'Referrer-Policy': securityHeaders.referrerPolicy,
-      'Permissions-Policy': securityHeaders.permissionsPolicy,
-      'X-XSS-Protection': '1; mode=block',
-      'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
+/**
+ * Middleware de seguridad
+ */
+export const securityMiddleware = {
+  /**
+   * Aplica headers de seguridad
+   */
+  applySecurityHeaders(req, res) {
+    Object.entries(securityConfig.headers).forEach(([key, value]) => {
+      res.setHeader(key, value);
     });
+  },
 
-    try {
-      // Ejecutar el manejador de la ruta
-      const response = await handler(req);
-      
-      // Aplicar los encabezados de seguridad a la respuesta
-      for (const [key, value] of headers.entries()) {
-        response.headers.set(key, value);
+  /**
+   * Aplica rate limiting
+   */
+  applyRateLimit(req, res, options = {}) {
+    const config = options.auth ? 
+      securityConfig.rateLimit.auth : 
+      securityConfig.rateLimit.global;
+
+    const store = new Map();
+    const key = options.key || req.ip;
+    const now = Date.now();
+    const windowStart = now - config.windowMs;
+
+    // Limpiar entradas antiguas
+    for (const [storedKey, timestamp] of store.entries()) {
+      if (timestamp < windowStart) {
+        store.delete(storedKey);
       }
-      
-      return response;
-    } catch (error) {
-      console.error('Error en la ruta de la API:', error);
-      return new Response(
-        JSON.stringify({ error: 'Error interno del servidor' }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
-      );
     }
-  };
-}
+
+    // Obtener intentos actuales
+    const attempts = store.get(key) || [];
+    const recentAttempts = attempts.filter(timestamp => timestamp > windowStart);
+
+    if (recentAttempts.length >= config.max) {
+      const oldestAttempt = Math.min(...recentAttempts);
+      const resetTime = new Date(oldestAttempt + config.windowMs);
+      throw new Error(`Rate limit exceeded. Try again after ${resetTime.toISOString()}`);
+    }
+
+    // Registrar nuevo intento
+    recentAttempts.push(now);
+    store.set(key, recentAttempts);
+
+    return {
+      limit: config.max,
+      remaining: config.max - recentAttempts.length,
+      reset: new Date(now + config.windowMs)
+    };
+  }
+};
+
+// Exportar función de rate limit para uso directo
+export const rateLimit = (key, options = {}) => {
+  return securityMiddleware.applyRateLimit({ ip: key }, null, options);
+};

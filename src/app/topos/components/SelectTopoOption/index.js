@@ -1,46 +1,55 @@
+import { memo, useCallback } from "react";
 import styles from "./SelectTopoOption.module.css";
 
-export default function SelectTopoOption({ 
-  data, 
-  inputToSet, 
-  defaultValue, 
-  className = '', 
+const SelectTopoOption = memo(function SelectTopoOption({
+  data: options,
+  inputToSet: onChange,
+  defaultValue,
+  className = "",
   disabled = false,
   hideDefaultOption = false,
-  onOptionHover = () => {}
 }) {
+  const handleChange = useCallback((e) => {
+    onChange(e.target.value);
+  }, [onChange]);
+
+  const defaultOptionClasses = `${styles.option} ${
+    defaultValue ? styles.disabledOption : ""
+  }`;
+
   return (
     <section className={styles.container}>
       <select
         value={defaultValue}
-        className={`${styles.select} ${className}`}
-        onChange={(e) => {
-          inputToSet(e.target.value);
-        }}
+        className={`${styles.select} ${className}`.trim()}
+        onChange={handleChange}
         disabled={disabled}
       >
-        <option 
-          className={`${styles.option} ${defaultValue ? styles.disabledOption : ''}`} 
-          value=""
-          disabled={!!defaultValue}
-        >
-          --- choose ---
-        </option>
+        {!hideDefaultOption && (
+          <option
+            className={defaultOptionClasses}
+            value=""
+            disabled={!!defaultValue}
+          >
+            --- choose ---
+          </option>
+        )}
 
-        {data &&
-          data.map((dataToMap) => {
-            return (
-              <option
-                className={styles.option}
-                key={dataToMap.id}
-                value={dataToMap.id}
-                onMouseEnter={() => onOptionHover(dataToMap.id)}
-              >
-                {dataToMap.name}
-              </option>
-            );
-          })}
+        {options?.map((option) => (
+          <option
+            className={styles.option}
+            key={option.id}
+            value={option.id}
+          >
+            {option.name}
+          </option>
+        ))}
       </select>
     </section>
   );
-}
+});
+
+// Nombre para DevTools
+SelectTopoOption.displayName = 'SelectTopoOption';
+
+export default SelectTopoOption;

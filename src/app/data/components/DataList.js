@@ -1,6 +1,6 @@
 // components/DataList.js
 import { useState, useEffect } from 'react';
-import { getSupabase } from '../supabaseClient';
+import { getSupabase } from '@utils/supabase/client';
 import styles from './Form.module.css';
 
 export default function DataList({ tableName, title, columns }) {
@@ -11,14 +11,18 @@ export default function DataList({ tableName, title, columns }) {
   // Función para obtener los registros iniciales
   const fetchRecords = async () => {
     setLoading(true);
-    const supabase = getSupabase();
-    const { data, error } = await supabase
-      .from(tableName)
-      .select('*');
-    if (error) {
-      setError(error.message);
-    } else {
-      setRecords(data);
+    try {
+      const supabase = getSupabase();
+      const { data, error: fetchError } = await supabase
+        .from(tableName)
+        .select('*');
+      if (fetchError) {
+        setError(fetchError.message);
+      } else {
+        setRecords(data);
+      }
+    } catch (err) {
+      setError(err.message);
     }
     setLoading(false);
   };
@@ -60,7 +64,9 @@ export default function DataList({ tableName, title, columns }) {
 
     // Limpieza al desmontar el componente
     return () => {
-      if (channel) supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
   }, [tableName]);
 
@@ -68,30 +74,26 @@ export default function DataList({ tableName, title, columns }) {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className={styles.listContainer}>
-      <h2>{title}</h2>
-      {records.length === 0 ? (
-        <p>No hay registros en {title}.</p>
-      ) : (
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              {columns.map(col => (
-                <th key={col}>{col}</th>
+    <div className={styles.dataList}>
+      <h3>{title}</h3>
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            {columns.map(column => (
+              <th key={column}>{column}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {records.map(record => (
+            <tr key={record.id}>
+              {columns.map(column => (
+                <td key={`${record.id}-${column}`}>{record[column]}</td>
               ))}
             </tr>
-          </thead>
-          <tbody>
-            {records.map(record => (
-              <tr key={record.id || JSON.stringify(record)}>
-                {columns.map(col => (
-                  <td key={col}>{record[col]}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
