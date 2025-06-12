@@ -20,12 +20,12 @@ export const revalidate = 86400;
 
 // 🧠 Metadata dinámica por lugar
 export async function generateMetadata({ params }) {
-  const param = await params;   
+  const param = await params;
   const places = await getAllPlaces();
   const place = places.find((p) => p.id === param.placeId);
 
   return {
-    title: place?.name || "Lugar",
+    title: `Topos de ${place?.name}` || "Lugar",
     description: place?.description || "Descripción del lugar",
   };
 }

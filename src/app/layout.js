@@ -1,7 +1,5 @@
 import Header from "@components/Header";
-import { store } from "@redux/store";
 import { Poppins } from "next/font/google";
-import { Providers } from "@redux/providers/toposProvider";
 import "../styles/globals.css";
 
 const inter = Poppins({
@@ -20,14 +18,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang='en'>
       <body>
-        {/* <Providers store={store}> */}
-          <div className={`${inter.className} antialiased`}>
-            <Header />
-            <div className="bodyContainer">
-              {children}
-            </div>
-          </div>
-        {/* </Providers> */}
+        <div className={`${inter.className} antialiased`}>
+          <Header />
+          <div className='bodyContainer'>{children}</div>
+        </div>
       </body>
     </html>
   );

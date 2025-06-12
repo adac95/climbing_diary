@@ -1,6 +1,6 @@
 'use server';
 
-import AuthService from '@/services/auth.service';
+import ServerAuth from '@/services/auth.server';
 import { AUTH_CONFIG } from '@/config/auth/server/security';
 import { ERROR_MESSAGES } from '@/config/auth/server/security';
 import { rateLimit } from '@/utils/security';
@@ -59,7 +59,7 @@ export async function loginAction(formData) {
   }
 
   try {
-    const result = await AuthService.loginWithCredentials({ email, password });
+    const result = await ServerAuth.loginWithCredentials({ email, password });
 
     if (!result.success) {
       // Registrar intento fallido

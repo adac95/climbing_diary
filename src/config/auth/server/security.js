@@ -36,7 +36,6 @@ export const SECURITY_CONFIG = {
 
 // Cache TTLs
 export const CACHE_CONFIG = {
-  ROLE_CACHE_TTL: 5 * 60 * 1000, // 5 minutos
   SESSION_CACHE_TTL: 60 * 1000, // 1 minuto
   PROFILE_CACHE_TTL: 5 * 60 * 1000 // 5 minutos
 }; 

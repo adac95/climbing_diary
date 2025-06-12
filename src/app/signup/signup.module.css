@@ -1,0 +1,255 @@
+/* Consistent with login.module.css .loginContainer */
+.container {
+  min-height: calc(100vh - 80px); /* Assuming 80px is header height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 2rem;
+  background-color: var(--color-background);
+
+  /* --- Full-bleed background styles --- */
+  width: 100vw;
+  position: relative; /* Ensures left/transform work correctly relative to document flow */
+  left: 50%;
+  transform: translateX(-50%);
+  box-sizing: border-box; /* Important: padding will be inside the 100vw */
+}
+
+/* Consistent with login.module.css .loginCard, renamed .form to .signupCard for clarity */
+.signupCard { /* Renamed from .form to avoid conflict if .form is too generic */
+  width: 100%;
+  max-width: 500px; /* Aligned with loginCard */
+  margin: 0 auto;
+  padding: 3rem 2.5rem; /* Aligned with loginCard */
+  background-color: var(--color-white, #ffffff);
+  border-radius: var(--border-radius, 8px);
+  border: 1px solid var(--color-border-light, rgba(0, 0, 0, 0.1)); /* Assuming var(--color-border-light) or similar */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Adjusted gap, similar to login form's implicit gaps */
+}
+
+/* Consistent with login.module.css .title */
+.title {
+  font-size: 2.4rem; /* Aligned with login */
+  font-weight: var(--font-weight-bold, bold);
+  color: var(--color-primary);
+  margin-bottom: 1.5rem; /* Adjusted */
+  text-align: center;
+}
+
+/* Estilos para la pantalla de verificación de correo */
+.verificationContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.successIcon {
+  color: var(--color-success, #28a745);
+  margin: 1.5rem 0;
+}
+
+.verificationText {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  color: var(--color-text, #333);
+}
+
+.verificationText strong {
+  color: var(--color-primary);
+}
+
+.verificationInstructions {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: var(--color-text, #333);
+}
+
+.verificationNote {
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+  color: var(--color-text-secondary, #666);
+}
+
+.verificationActions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.buttonSecondary {
+  padding: 1rem 1.5rem;
+  background-color: white;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  border-radius: var(--border-radius, 8px);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.buttonSecondary:hover {
+  background-color: var(--color-gray-100, #f7fafc);
+}
+
+.buttonPrimary {
+  padding: 1rem 1.5rem;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius, 8px);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttonPrimary:hover {
+  background-color: var(--color-yellow);
+  color: var(--color-primary);
+}
+
+/* Consistent with login.module.css .formGroup */
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Consistent with login.module.css .label */
+.label {
+  font-size: var(--font-size-sm, 0.875rem); /* Assuming 1.4rem in login is base, sm is smaller */
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--color-text, #333);
+  /* margin-bottom: 0.5rem; -- Handled by inputGroup gap */
+}
+
+/* Consistent with login.module.css .input */
+.input {
+  width: 100%;
+  padding: 1.2rem 1.5rem; /* Aligned with login */
+  border: 1px solid var(--color-border, #e2e8f0); /* Assuming var(--color-border) */
+  border-radius: var(--border-radius, 8px);
+  font-size: var(--font-size-base, 1rem); /* Assuming 1.4rem in login is specific, using a base */
+  color: var(--color-input-text, #333); /* Assuming var(--color-input-text) */
+  transition: all 0.2s ease;
+  background-color: var(--color-input-bg, #f8fafc);
+  box-sizing: border-box;
+}
+
+.input:hover {
+  border-color: var(--color-primary, #007bff);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary, #007bff);
+}
+
+/* Consistent with login.module.css .loginButton (as primary button) */
+.button {
+  width: 100%;
+  padding: 1.2rem 2rem; /* Aligned with login */
+  border: none;
+  border-radius: var(--border-radius, 8px);
+  font-size: var(--font-size-md, 1rem); /* Assuming 1.4rem in login is specific */
+  font-weight: var(--font-weight-medium, 500);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  background-color: var(--color-primary);
+  color: var(--color-white, #ffffff);
+}
+
+.button:hover {
+  background-color: var(--color-yellow); 
+  color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.button:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+}
+
+.button:disabled {
+  background-color: var(--color-disabled, #ccc);
+  opacity: 0.7; /* Consistent with login */
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Estilo para el mensaje de cooldown */
+.cooldownMessage {
+  text-align: center;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--color-text-muted, #666);
+  background-color: var(--color-background-light, #f9f9f9);
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius, 4px);
+  border-left: 3px solid var(--color-warning, #f0ad4e);
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+/* Message styles - to be used by Message component via styles.error, styles.success */
+.message {
+  padding: 1rem; /* Adjusted padding */
+  margin-bottom: 1.5rem; /* Consistent with login.errorMessage margin */
+  border-radius: var(--border-radius, 8px);
+  text-align: center;
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.5;
+}
+
+.success {
+  background-color: var(--color-success-light, #d4edda);
+  color: var(--color-success-dark, #155724);
+  border: 1px solid var(--color-success-border, #c3e6cb);
+}
+
+.error {
+  background-color: var(--color-error-light, #f8d7da);
+  color: var(--color-error-dark, #721c24);
+  border: 1px solid var(--color-error-border, #f5c6cb);
+}
+
+/* Consistent with login links, e.g., .forgotPassword */
+.loginLink {
+  text-align: center;
+  margin-top: 1.5rem; /* Adjusted */
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.loginLink a {
+  color: var(--color-primary, #007bff);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.loginLink a:hover {
+  text-decoration: underline;
+  color: var(--color-primary-dark, #0056b3);
+}
+
+.passwordHint {
+  font-size: var(--font-size-xs, 0.75rem); /* Smaller */
+  color: var(--color-text-secondary, #666);
+  margin-top: 0.25rem; /* Reduced margin */
+  display: block;
+}

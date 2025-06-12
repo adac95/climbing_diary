@@ -45,6 +45,7 @@ const nextConfig = {
     // Habilitar Server Actions
     serverActions: {
       bodySizeLimit: '2mb',
+      allowedOrigins: ['127.0.0.1:54511', 'localhost:3000'],
     },
     // Mejorar la compatibilidad
     esmExternals: true,

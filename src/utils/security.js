@@ -74,11 +74,11 @@ export const securityConfig = {
   // Validaciones de seguridad
   validation: {
     password: {
-      minLength: 12,
-      requireUppercase: true,
-      requireLowercase: true,
-      requireNumbers: true,
-      requireSpecialChars: true,
+      minLength: 6,
+      requireUppercase: false,
+      requireLowercase: false,
+      requireNumbers: false,
+      requireSpecialChars: false,
       maxLength: 128
     },
     email: {
@@ -118,16 +118,35 @@ export const securityUtils = {
    */
   validatePassword(password) {
     const { validation: { password: rules } } = securityConfig;
+    const errors = [];
+
+    if (password.length < rules.minLength) {
+      errors.push(`Debe tener al menos ${rules.minLength} caracteres.`);
+    }
+
+    if (password.length > rules.maxLength) {
+      errors.push(`No debe exceder los ${rules.maxLength} caracteres.`);
+    }
+
+    if (rules.requireUppercase && !/[A-Z]/.test(password)) {
+      errors.push('Debe contener al menos una letra mayúscula.');
+    }
+
+    if (rules.requireLowercase && !/[a-z]/.test(password)) {
+      errors.push('Debe contener al menos una letra minúscula.');
+    }
+
+    if (rules.requireNumbers && !/[0-9]/.test(password)) {
+      errors.push('Debe contener al menos un número.');
+    }
+
+    if (rules.requireSpecialChars && !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      errors.push('Debe contener al menos un carácter especial.');
+    }
     
     return {
-      isValid: 
-        password.length >= rules.minLength &&
-        password.length <= rules.maxLength &&
-        /[A-Z]/.test(password) &&
-        /[a-z]/.test(password) &&
-        /[0-9]/.test(password) &&
-        /[!@#$%^&*(),.?":{}|<>]/.test(password),
-      errors: []
+      isValid: errors.length === 0,
+      errors: errors
     };
   },
 

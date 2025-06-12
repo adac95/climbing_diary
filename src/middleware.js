@@ -1,69 +1,61 @@
-import { NextResponse } from 'next/server';
-import { updateSession } from '@utils/supabase/middleware';
-import { ROUTES } from '@/config/auth/server/routes';
+import { NextResponse } from "next/server";
+import { updateSession } from "@utils/supabase/middleware";
+import { ROUTES } from "@/config/auth/server/routes";
 
-// Cache de rutas para optimizar el rendimiento
-const routeCache = new Map();
-
-// Función auxiliar para verificar rutas con cache
+// Función auxiliar para verificar rutas (simplificada)
 const matchesRoute = (pathname, routes) => {
-  const cacheKey = `${pathname}:${routes.join(',')}`;
-  
-  if (routeCache.has(cacheKey)) {
-    return routeCache.get(cacheKey);
-  }
-  
-  const result = routes.some(route => pathname.startsWith(route));
-  routeCache.set(cacheKey, result);
-  
-  // Limpiar cache si es muy grande
-  if (routeCache.size > 1000) {
-    routeCache.clear();
-  }
-  
-  return result;
+  return routes.some((route) => pathname.startsWith(route));
 };
 
 export async function middleware(request) {
   try {
     const { pathname } = request.nextUrl;
 
-    // 1. Permitir rutas estáticas sin procesar
-    if (matchesRoute(pathname, ROUTES.STATIC) || 
-        pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|webp)$/)) {
+    // 1. Permitir acceso directo a archivos estáticos
+    if (pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|webp)$/)) {
       return NextResponse.next();
     }
 
-    // 2. Determinar tipo de ruta
-    const isProtectedRoute = matchesRoute(pathname, ROUTES.PROTECTED);
-    const isPublicRoute = matchesRoute(pathname, ROUTES.PUBLIC);
-
-    // 3. Actualizar sesión de Supabase
-    const response = await updateSession(request);
-
-    // 4. Si es una ruta pública o no protegida, permitir acceso
-    if (!isProtectedRoute || isPublicRoute) {
-      return response;
+    // 2. Rutas estáticas definidas en configuración
+    if (matchesRoute(pathname, ROUTES.STATIC)) {
+      return NextResponse.next();
     }
-
-    // 5. Verificar sesión
-    const hasValidSession = request.cookies.has('sb-access-token') && 
-                          request.cookies.has('sb-refresh-token');
-
-    if (!hasValidSession) {
-      const redirectUrl = new URL('/login', request.url);
-      redirectUrl.searchParams.set('returnTo', pathname);
-      return NextResponse.redirect(redirectUrl);
-    }
-
-    return response;
-
-  } catch (error) {
-    console.error('Error en middleware:', error);
     
-    const redirectUrl = new URL('/login', request.url);
-    redirectUrl.searchParams.set('error', 'session_error');
-    return NextResponse.redirect(redirectUrl);
+    // 3. Actualizar sesión en Supabase y obtener respuesta con cookies actualizadas
+    // La función updateSession ya maneja la redirección para rutas protegidas
+    // cuando el usuario no está autenticado
+    const response = await updateSession(request);
+    
+    // 4. Añadir cabeceras de seguridad básicas
+    const securityHeaders = {
+      "X-XSS-Protection": "1; mode=block",
+      "X-Frame-Options": "DENY",
+      "X-Content-Type-Options": "nosniff"
+    };
+    
+    // Añadir todas las cabeceras de seguridad
+    Object.entries(securityHeaders).forEach(([header, value]) => {
+      response.headers.set(header, value);
+    });
+    
+    // Añadir HSTS solo en producción
+    if (process.env.NODE_ENV === "production") {
+      response.headers.set(
+        "Strict-Transport-Security",
+        "max-age=31536000; includeSubDomains; preload"
+      );
+    }
+    
+    // 5. Devolver la respuesta (updateSession ya hizo todo lo necesario)
+    return response;
+    
+  } catch (error) {
+    console.error("Error en middleware:", error);
+    
+    // En caso de error, redirigir al login
+    return NextResponse.redirect(
+      new URL(`/login?error=session_error`, request.url)
+    );
   }
 }
 
@@ -71,14 +63,14 @@ export async function middleware(request) {
 export const config = {
   matcher: [
     // Rutas protegidas
-    '/dashboard/:path*',
-    '/profile/:path*',
-    '/settings/:path*',
+    "/profile/:path*",
+    "/settings/:path*",
     // Rutas públicas que necesitan middleware
-    '/login',
-    '/register',
-    '/reset-password',
+    "/login",
+    "/signup",
+    "/register",
+    "/reset-password",
     // Excluir archivos estáticos
-    '/((?!_next/static|_next/image|favicon.ico).*)'
-  ]
+    "/((?!_next/static|_next/image|favicon.ico).*)",
+  ],
 };

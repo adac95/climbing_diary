@@ -1,4 +1,4 @@
-import AuthService from '@/services/auth.service';
+import ServerAuth from '@/services/auth.server';
 import { ERROR_MESSAGES } from '@/config/auth/client/messages';
 import { CLIENT_ERROR_MESSAGES } from '@/config/client/auth.messages';
 
@@ -11,30 +11,18 @@ import { CLIENT_ERROR_MESSAGES } from '@/config/client/auth.messages';
 export function createApiHandler(handler, options = {}) {
   return async (request, context) => {
     try {
-      // Verificar autenticación usando AuthService
-      const { session, user } = await AuthService.requireAuth();
+      // Verificar autenticación usando ServerAuth
+      const { session, user } = await ServerAuth.requireAuth();
 
-      // Verificar rol si es necesario
-      if (options.requiredRole) {
-        const hasRole = await AuthService.checkUserRole(options.requiredRole);
-        if (!hasRole) {
-          return new Response(
-            JSON.stringify({ error: ERROR_MESSAGES.UNAUTHORIZED }),
-            { status: 403, headers: { 'Content-Type': 'application/json' } }
-          );
-        }
-      }
+
 
       // Pasar la sesión y el usuario al manejador
       return await handler(request, { 
         ...context, 
         session, 
         user,
-        // Agregar helpers útiles
-        auth: {
-          hasRole: async (role) => AuthService.checkUserRole(role),
-          getProfile: async () => AuthService.getUserProfile(user.id)
-        }
+          // Sesión y usuario disponibles
+          auth: {}
       });
     } catch (error) {
       console.error('API Error:', error);
@@ -67,15 +55,9 @@ export function createApiHandler(handler, options = {}) {
 export function withAuth(PageComponent, options = {}) {
   return async function AuthProtectedPage(props) {
     try {
-      const { session, user } = await AuthService.requireAuth();
+      const { session, user } = await ServerAuth.requireAuth();
 
-      // Verificar rol si es necesario
-      if (options.requiredRole) {
-        const hasRole = await AuthService.checkUserRole(options.requiredRole);
-        if (!hasRole) {
-          throw new Error(ERROR_MESSAGES.UNAUTHORIZED);
-        }
-      }
+
 
       // Pasar datos de autenticación al componente
       return (
@@ -83,10 +65,7 @@ export function withAuth(PageComponent, options = {}) {
           {...props}
           session={session}
           user={user}
-          auth={{
-            hasRole: async (role) => AuthService.checkUserRole(role),
-            getProfile: async () => AuthService.getUserProfile(user.id)
-          }}
+          auth={{}}
         />
       );
     } catch (error) {

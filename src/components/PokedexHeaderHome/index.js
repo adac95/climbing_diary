@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useState } from "react";
 import styles from "./PokedexHeaderHome.module.css";
 import Modal from "@components/Modal";
@@ -18,9 +18,12 @@ export default function PokedexHeaderHome() {
           className={styles.button}
           onClick={() => setIsOpen(true)}
         ></button>
-        
       </header>
-      {isOpen && <Modal isOpen={isOpen} onClose={closeModal}><PokedexNewRouteModal/></Modal>}
+      {isOpen && (
+        <Modal isOpen={isOpen} onClose={closeModal}>
+          <PokedexNewRouteModal />
+        </Modal>
+      )}
     </>
   );
 }

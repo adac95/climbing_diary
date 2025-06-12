@@ -2,125 +2,141 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import { ROUTES } from '@/config/auth/server/routes';
 
-// Rutas de assets que siempre deben ser accesibles
-const ASSET_ROUTES = ROUTES.STATIC;
+// Opciones predeterminadas para cookies
+const DEFAULT_COOKIE_OPTIONS = {
+  path: '/',
+  sameSite: 'lax',
+  secure: process.env.NODE_ENV === 'production',
+  httpOnly: true
+};
 
+/**
+ * Actualiza la sesión de Supabase en middleware de Next.js
+ * - Maneja cookies de autenticación
+ * - Redirecciona a login cuando una ruta protegida es accedida sin autenticación
+ * - Limpia cookies inválidas o expiradas
+ */
 export async function updateSession(request) {
   try {
-    // Verificar si es una ruta de assets
     const { pathname } = request.nextUrl;
-    if (ASSET_ROUTES.some(route => pathname.startsWith(route))) {
-      return NextResponse.next();
-    }
-
-    // Crear respuesta inicial
-    let response = NextResponse.next({
-      request: {
-        headers: request.headers,
-      },
+    
+    // Inicializar respuesta
+    const response = NextResponse.next({
+      request: { headers: request.headers },
     });
-
-    // Crear cliente Supabase
+    
+    // Detectar casos especiales
+    const isLogoutRequest = pathname === '/api/auth/logout';
+    const isAuthCallback = pathname.startsWith('/auth/callback');
+    
+    // Crear cliente Supabase para el middleware
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       {
         cookies: {
-          async get(name) {
-            try {
-              const cookie = request.cookies.get(name);
-              return cookie?.value;
-            } catch (error) {
-              console.error('Error al leer cookie:', error);
-              return null;
-            }
-          },
-          async set(name, value, options) {
-            try {
-              response = NextResponse.next({
-                request: {
-                  headers: request.headers,
-                },
-              });
-              response.cookies.set(name, value, {
-                ...options,
-                sameSite: 'lax',
-                secure: process.env.NODE_ENV === 'production',
-                httpOnly: true,
-                path: '/'
-              });
-            } catch (error) {
-              console.error('Error al establecer cookie:', error);
-            }
-          },
-          async remove(name, options) {
-            try {
-              response = NextResponse.next({
-                request: {
-                  headers: request.headers,
-                },
-              });
+          get: (name) => request.cookies.get(name)?.value,
+          set: (name, value, options) => {
+            // Si es logout o el valor está vacío, eliminar la cookie
+            if (!value || isLogoutRequest && value === '') {
               response.cookies.set(name, '', {
-                ...options,
-                maxAge: 0,
-                path: '/'
+                ...DEFAULT_COOKIE_OPTIONS,
+                maxAge: 0
               });
-            } catch (error) {
-              console.error('Error al eliminar cookie:', error);
+            } else {
+              // Para cookies normales
+              response.cookies.set(name, value, {
+                ...DEFAULT_COOKIE_OPTIONS,
+                ...options
+              });
             }
           },
+          remove: (name) => {
+            response.cookies.set(name, '', {
+              ...DEFAULT_COOKIE_OPTIONS,
+              maxAge: 0
+            });
+          }
         },
         auth: {
-          flowType: 'pkce',
-          detectSessionInUrl: true,
           persistSession: true,
           autoRefreshToken: true
         }
       }
     );
-
-    // Obtener usuario actual
-    const {
-      data: { session },
-      error: sessionError
-    } = await supabase.auth.getSession();
-
-    // Verificar si la ruta requiere autenticación
+    
+    // Para logout, simplemente devolver la respuesta
+    if (isLogoutRequest) return response;
+    
+    // Para callbacks de auth, dejar que el handler se encargue
+    if (isAuthCallback) return response;
+    
+    // Rutas de autenticación específicas donde usuarios ya autenticados no deben acceder
+    const isAuthRoute = pathname === '/signup' || pathname === '/login' || pathname === '/register';
+    
+    // Verificar si la ruta es protegida
     const isProtectedRoute = ROUTES.PROTECTED.some(route => pathname.startsWith(route));
-    const isPublicRoute = ROUTES.PUBLIC.some(route => pathname.startsWith(route));
-
-    if (isProtectedRoute) {
-      if (sessionError || !session) {
-        // Redirigir a login si no hay sesión válida
-        const redirectUrl = new URL('/login', request.url);
-        redirectUrl.searchParams.set('redirectedFrom', pathname);
-        return NextResponse.redirect(redirectUrl);
+    
+    // Realizar verificación de autenticación para rutas protegidas o rutas de autenticación
+    if (isProtectedRoute || isAuthRoute) {
+      // Inicializar sesión
+      await supabase.auth.getSession();
+      
+      // Verificar si el usuario está autenticado
+      const { data, error } = await supabase.auth.getUser();
+      
+      // Verificar si el usuario existe o no
+      const userAuthenticated = data?.user && !error;
+      
+      // CASO 1: Usuario NO autenticado intentando acceder a rutas protegidas
+      if (isProtectedRoute && !userAuthenticated) {
+        // Limpiar todas las cookies de autenticación
+        [
+          'sb-access-token',
+          'sb-refresh-token',
+          'sb-provider-token',
+          'sb-provider-refresh-token'
+        ].forEach(cookieName => {
+          if (request.cookies.has(cookieName)) {
+            response.cookies.set(cookieName, '', {
+              ...DEFAULT_COOKIE_OPTIONS,
+              maxAge: 0
+            });
+          }
+        });
+        
+        // Redirigir a login
+        const loginUrl = new URL('/login', request.url);
+        loginUrl.searchParams.set('redirectedFrom', pathname);
+        loginUrl.searchParams.set('error', error ? 'auth_error' : 'session_expired');
+        return NextResponse.redirect(loginUrl);
       }
-
-      // Verificar si la sesión ha expirado
-      const now = Math.floor(Date.now() / 1000);
-      if (session.expires_at && session.expires_at < now) {
-        const redirectUrl = new URL('/login', request.url);
-        redirectUrl.searchParams.set('redirectedFrom', pathname);
-        redirectUrl.searchParams.set('error', 'expired_session');
-        return NextResponse.redirect(redirectUrl);
+      
+      // CASO 2: Usuario autenticado intentando acceder a rutas de autenticación
+      if (isAuthRoute && userAuthenticated) {
+        // Redirigir al dashboard o página principal
+        return NextResponse.redirect(new URL('/', request.url));
       }
+    } else {
+      // Para rutas no protegidas, solo inicializar la sesión sin verificación adicional
+      await supabase.auth.getSession();
     }
-
-    // Actualizar la respuesta con la sesión
+    
+    // Todo en orden, devolver respuesta con cookies actualizadas
     return response;
-
+    
   } catch (error) {
     console.error('Error en middleware:', error);
     
-    // En caso de error, permitir el acceso solo a rutas públicas
+    // En caso de error, permitir acceso a rutas públicas
+    const pathname = request.nextUrl.pathname;
     if (ROUTES.PUBLIC.some(route => pathname.startsWith(route))) {
       return NextResponse.next();
     }
-
-    // Redirigir a login para el resto
-    const redirectUrl = new URL('/login', request.url);
-    redirectUrl.searchParams.set('error', 'auth_error');
-    return NextResponse.redirect(redirectUrl);
+    
+    // Para el resto, redirigir a login
+    return NextResponse.redirect(
+      new URL(`/login?error=auth_error`, request.url)
+    );
   }
 }

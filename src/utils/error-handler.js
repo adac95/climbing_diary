@@ -7,6 +7,7 @@ export const ErrorTypes = {
   NOT_FOUND: 'NOT_FOUND',
   PERMISSION: 'PERMISSION_ERROR',
   SERVER: 'SERVER_ERROR',
+  RATE_LIMIT: 'RATE_LIMIT_ERROR',
   UNKNOWN: 'UNKNOWN_ERROR'
 };
 
@@ -19,6 +20,7 @@ const userFriendlyMessages = {
   [ErrorTypes.NOT_FOUND]: 'El recurso solicitado no fue encontrado.',
   [ErrorTypes.PERMISSION]: 'No tienes permisos para realizar esta acción.',
   [ErrorTypes.SERVER]: 'Error del servidor. Por favor, intenta más tarde.',
+  [ErrorTypes.RATE_LIMIT]: 'Has alcanzado el límite de solicitudes. Por favor, inténtalo más tarde.',
   [ErrorTypes.UNKNOWN]: 'Ha ocurrido un error inesperado.'
 };
 
@@ -36,8 +38,13 @@ const getErrorType = (error) => {
   if (error.status === 403) {
     return ErrorTypes.PERMISSION;
   }
-  if (error.message?.includes('network') || !navigator.onLine) {
+  // Check for navigator existence for server-side compatibility
+  if (error.message?.includes('network') || (typeof navigator !== 'undefined' && !navigator.onLine)) {
     return ErrorTypes.NETWORK;
+  }
+  // Detectar errores de límite de tasa
+  if (error.status === 429 || error.message?.includes('rate limit') || error.code === 'over_email_send_rate_limit') {
+    return ErrorTypes.RATE_LIMIT;
   }
   if (error.status >= 500) {
     return ErrorTypes.SERVER;
@@ -47,13 +54,23 @@ const getErrorType = (error) => {
 
 // Función principal de manejo de errores
 export const handleError = (error, context = {}) => {
-  const errorType = getErrorType(error);
+  // Prioritize error type from context if available and valid.
+  const errorType = Object.values(ErrorTypes).includes(context.code)
+    ? context.code
+    : getErrorType(error);
+
   const timestamp = new Date().toISOString();
 
-  // Crear objeto de error estructurado
+  // For validation errors, use the specific message from the original error.
+  // For other errors, use the generic user-friendly message.
+  const message = (errorType === ErrorTypes.VALIDATION && error.message)
+    ? error.message
+    : userFriendlyMessages[errorType];
+
+  // Crear objeto de error estructurado para logging
   const errorObject = {
     type: errorType,
-    message: userFriendlyMessages[errorType],
+    message: message,
     originalError: error.message,
     timestamp,
     context,
@@ -77,7 +94,7 @@ export const handleError = (error, context = {}) => {
   // Retornar objeto con información segura para el usuario
   return {
     type: errorType,
-    message: userFriendlyMessages[errorType],
+    message: message,
     id: timestamp // Útil para referencia en soporte
   };
 };

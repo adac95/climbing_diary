@@ -4,6 +4,7 @@ export const ROUTES = {
     '/login',
     '/signup',
     '/auth',
+    '/auth/callback',
     '/reset-password',
     '/verify',
     '/',

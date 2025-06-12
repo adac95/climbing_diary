@@ -32,7 +32,7 @@ export const createSupabaseClient = () => {
             try {
               const secure = process.env.NODE_ENV === 'production' || options.secure;
               let cookie = `${name}=${encodeURIComponent(value)}; path=/; SameSite=Lax${secure ? '; Secure' : ''}`;
-              
+              // Cookie establecida
               if (options.maxAge) {
                 cookie += `; Max-Age=${options.maxAge}`;
               }
@@ -48,6 +48,7 @@ export const createSupabaseClient = () => {
           remove(name) {
             try {
               document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`;
+              // Cookie eliminada
             } catch (error) {
               console.error('Error al eliminar cookie:', error);
             }
@@ -56,8 +57,6 @@ export const createSupabaseClient = () => {
         auth: {
           autoRefreshToken: true,
           persistSession: true,
-          detectSessionInUrl: true,
-          flowType: 'pkce', // Usar PKCE para mayor seguridad
           storage: {
             getItem: (key) => {
               try {
@@ -110,9 +109,4 @@ export function getSupabase() {
   }
   }
   return supabaseInstance;
-}
-
-// Función para limpiar la instancia (útil para testing y casos especiales)
-export function clearSupabaseInstance() {
-  supabaseInstance = null;
 }
