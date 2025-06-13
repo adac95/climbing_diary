@@ -1,11 +1,13 @@
 /* Header.module.css */
 
 .header {
-  display: flex;
   width: 100%;
+  height: 65px;
+  display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 1.5rem 2rem;
+  justify-content: left;
+  padding: 0 1.5rem;
+  gap: 1rem;
   background-color: var(--color-white);
   position: sticky;
   top: 0;
@@ -28,9 +30,14 @@
   transform: scale(1.05);
 }
 
+.options {
+  width: 100%;
+}
+
 .options ul {
   list-style: none;
   display: flex;
+  justify-content: left;
   gap: 2.5rem;
   margin: 0;
   padding: 0;
@@ -47,13 +54,26 @@
   display: inline-block;
 }
 
+.navLinkWithIcon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.navLinkWithIcon span {
+  font-size: 1rem;
+  text-align: center;
+  margin-top: -0.5rem;
+}
+
 .navLink:hover {
   color: var(--color-primary);
 }
 
 /* Efecto de subrayado al hacer hover */
 .navLink::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;

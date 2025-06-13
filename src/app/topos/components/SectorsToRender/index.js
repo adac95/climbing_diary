@@ -10,10 +10,8 @@ export default function SectorsToRender({ sector, routes }) {
   const [isShow, setIsShow] = useState(false);
   const routesToRender = routes.filter((e) => e.sector_id == sector.id);
 
-  
   const handleRoutesBtnToggle = () => {
     setIsShow(!isShow);
-
   };
 
   return (
@@ -28,7 +26,7 @@ export default function SectorsToRender({ sector, routes }) {
             height={"150"}
             alt='image of sector'
             src={
-              "https://hcegmotvdidgavvacgcy.supabase.co/storage/v1/object/sign/topo_pictures/WhatsApp%20Image%202024-12-22%20at%2023.32.22%20(1).jpeg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJ0b3BvX3BpY3R1cmVzL1doYXRzQXBwIEltYWdlIDIwMjQtMTItMjIgYXQgMjMuMzIuMjIuanBlZyIsImlhdCI6MTczNTU5MzI3NSwiZXhwIjoxNzM4MTg1Mjc1fQ.Q6DE_DX6yMg04qDNR4lE-b9WK_nffcSc5LDLiIVWXoU&t=2024-12-30T21%3A13%3A33.365Z"
+              "https://hcegmotvdidgavvacgcy.supabase.co/storage/v1/object/sign/topo_pictures/WhatsApp%20Image%202024-12-22%20at%2023.32.22.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMDBlNjhhMS1jNTFhLTRhNzAtOTZiYy01MWU3NDA4ZDJjMDQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ0b3BvX3BpY3R1cmVzL1doYXRzQXBwIEltYWdlIDIwMjQtMTItMjIgYXQgMjMuMzIuMjIuanBlZyIsImlhdCI6MTc0OTg0NzI1MywiZXhwIjoxNzgxMzgzMjUzfQ.IFddFI0yqYSEL2cebV_i6aVKvVwSUXsGzN3KbvtdvXA"
             }
           />
           <button
@@ -37,20 +35,18 @@ export default function SectorsToRender({ sector, routes }) {
             }
             onClick={handleRoutesBtnToggle}
           >
-           Ver Rutas
+            Ver Rutas
           </button>
         </>
       ) : (
         <>
           <div className={isShow && ` ${styles.imgIsShow}`}>
             <Image
-              className={
-                 styles.img
-              }
+              className={styles.img}
               width={"300"}
               height={"150"}
               alt='image of sector'
-              src={`https://hcegmotvdidgavvacgcy.supabase.co/storage/v1/object/sign/topo_pictures/WhatsApp%20Image%202024-12-22%20at%2023.32.22.jpeg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJ0b3BvX3BpY3R1cmVzL1doYXRzQXBwIEltYWdlIDIwMjQtMTItMjIgYXQgMjMuMzIuMjIuanBlZyIsImlhdCI6MTczNTU5MzI3NSwiZXhwIjoxNzM4MTg1Mjc1fQ.Q6DE_DX6yMg04qDNR4lE-b9WK_nffcSc5LDLiIVWXoU&t=2024-12-30T21%3A14%3A35.183Z`}
+              src={`https://hcegmotvdidgavvacgcy.supabase.co/storage/v1/object/sign/topo_pictures/WhatsApp%20Image%202024-12-22%20at%2023.32.22.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMDBlNjhhMS1jNTFhLTRhNzAtOTZiYy01MWU3NDA4ZDJjMDQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ0b3BvX3BpY3R1cmVzL1doYXRzQXBwIEltYWdlIDIwMjQtMTItMjIgYXQgMjMuMzIuMjIuanBlZyIsImlhdCI6MTc0OTg0NzI1MywiZXhwIjoxNzgxMzgzMjUzfQ.IFddFI0yqYSEL2cebV_i6aVKvVwSUXsGzN3KbvtdvXA`}
             />
             <button
               className={

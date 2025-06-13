@@ -1,12 +1,12 @@
 "use server";
 
-import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import UserMenu from "./UserMenu";
 import styles from "./Header.module.css";
-import logoImg from "../../public/assets/image.png";
 import { createSupabaseServerClient } from "@utils/supabase/server";
+import Header_home_svg from "./Header_home_svg";
+import Logo_svg from "./Logo_svg";
+import Header_topos_svg from "./Header_topos_svg";
 
 const Header = async () => {
   let user = null;
@@ -26,31 +26,26 @@ const Header = async () => {
 
   return (
     <header className={styles.header}>
-      <Link href="/" className={styles.logo} aria-label="Ir al inicio">
-        <Image 
-          src={logoImg} 
-          alt="Logo de la aplicación" 
-          width={120} 
-          height={40}
-          priority
-        />
+      <Link href='/' className={styles.logo} aria-label='Ir al inicio'>
+        <Logo_svg />
       </Link>
       {/* Navegación principal */}
-      <nav className={styles.options} aria-label="Navegación principal">
+      <nav className={styles.options} aria-label='Navegación principal'>
         <ul>
           <li>
-            <Link href="/" className={styles.navLink} aria-current="page">
-              Inicio
+            <Link href='/' className={styles.navLink} aria-current='page'>
+              <div className={styles.navLinkWithIcon}>
+                <Header_home_svg width='40px' />
+                <span>Inicio</span>
+              </div>
             </Link>
           </li>
           <li>
-            <Link href="/topos" className={styles.navLink}>
-              Topos
-            </Link>
-          </li>
-          <li>
-            <Link href="/data" className={styles.navLink}>
-              Datos
+            <Link href='/topos' className={styles.navLink}>
+              <div className={styles.navLinkWithIcon}>
+                <Header_topos_svg width='40px' />
+                <span>Topos</span>
+              </div>
             </Link>
           </li>
         </ul>

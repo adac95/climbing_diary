@@ -26,7 +26,7 @@
 
   & .imgIsShow {
     position: sticky;
-    top: 0;
+    top: 65px;
     z-index: 10;
     backdrop-filter: blur(3px);
     border-bottom: 1px solid #ddd;
