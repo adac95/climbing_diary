@@ -21,6 +21,26 @@ export default function Loading() {
         <div className={styles.infoSkeleton}></div>
         <div className={styles.infoSkeleton}></div>
         <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
+        <div className={styles.infoSkeleton}></div>
       </div>
     </div>
   );
