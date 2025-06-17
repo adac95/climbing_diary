@@ -1,0 +1,45 @@
+.breadcrumbNav {
+  padding: 0.75rem 1rem;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1rem;
+}
+
+.breadcrumbList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.breadcrumbItem {
+  display: flex;
+  align-items: center;
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+.separator {
+  margin: 0 0.25rem;
+  color: #9ca3af;
+  font-size: 1.1rem;
+}
+
+.homeIcon {
+  color: #4b5563;
+  margin-right: 0.25rem;
+}
+
+.link {
+  color: #4b5563;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: #000;
+}
+
+.current {
+  color: #000;
+  font-weight: 600;
+}

@@ -10,7 +10,7 @@
 
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import { useTransition, useMemo, useCallback, memo } from "react";
 import SelectTopoOption from "./components/SelectTopoOption";
 import styles from "./styles.module.css";
@@ -19,8 +19,16 @@ import { useTopoNavigation } from "src/hooks/useTopoNavigation";
 const TopoSelector = memo(function TopoSelector({ regions = [], places = [] }) {
   // Hooks para navegación y manejo de estado
   const router = useRouter();
-  const { regionId, placeId } = useParams();  // Obtiene IDs de la URL actual
+  const params = useParams();  // Obtiene params de la URL actual
+  const pathname = usePathname();  // Obtener la ruta actual para mejor detección
   const [isPending, startTransition] = useTransition();  // Para transiciones suaves durante la navegación
+  
+  // Verificar si estamos en la ruta principal /topos (sin parámetros)
+  const isToposRootPath = pathname === '/topos';
+  
+  // Extraer regionId y placeId de params, solo si no estamos en la ruta raíz
+  const regionId = isToposRootPath ? null : params?.regionId;
+  const placeId = isToposRootPath ? null : params?.placeId;
 
   // Filtra los lugares que pertenecen a la región seleccionada
   // Se recalcula solo cuando cambia la región o la lista de lugares
@@ -106,7 +114,7 @@ const TopoSelector = memo(function TopoSelector({ regions = [], places = [] }) {
               <SelectTopoOption
                 data={regions}
                 inputToSet={handleRegionChange}
-                defaultValue={regionId}
+                defaultValue={isToposRootPath ? "" : regionId}
                 disabled={isPending}
               />
             </div>
