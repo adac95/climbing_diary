@@ -1,4 +1,5 @@
 
+import Link from 'next/link';
 import styles from './Breadcrumb.module.css';
 
 export default function Breadcrumb({ items = [] }) {
@@ -15,7 +16,7 @@ export default function Breadcrumb({ items = [] }) {
             {/* Ítem con icono de casa si es el inicio */}
             {item.label === "Inicio" && index === 0 ? (
               item.href ? (
-                <a href={item.href} className={styles.link}>
+                <Link href={item.href} className={styles.link}>
                   <svg 
                     className={styles.homeIcon} 
                     xmlns="http://www.w3.org/2000/svg" 
@@ -30,7 +31,7 @@ export default function Breadcrumb({ items = [] }) {
                   >
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                   </svg>
-                </a>
+                </Link>
               ) : (
                 <span className={styles.current} aria-current="page">
                   <svg 
@@ -52,9 +53,9 @@ export default function Breadcrumb({ items = [] }) {
             ) : (
               /* Items normales */
               item.href && index < items.length - 1 ? (
-                <a href={item.href} className={styles.link}>
+                <Link href={item.href} className={styles.link}>
                   {item.label}
-                </a>
+                </Link>
               ) : (
                 <span className={styles.current} aria-current="page">
                   {item.label}

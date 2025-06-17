@@ -11,7 +11,6 @@ export default async function Toposlayout({ children }) {
     <main>
       <div>
         <TopoSelector regions={regions} places={places} />
-        {/* Breadcrumb persistente simplificado */}
         <SimpleBreadcrumb />
       </div>
       {children}
