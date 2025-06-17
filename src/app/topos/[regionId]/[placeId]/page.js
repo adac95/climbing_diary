@@ -1,6 +1,6 @@
 import Link from "next/link";
 import OptionsTopoToRender from "../../components/OptionsTopoToRender";
-import { PlaceToRender } from "../../components/PlaceToRender";
+import { PlaceToRender } from "./PlaceToRender";
 import { getAllPlaces } from "../../fetchData";
 import styles from "./PlacePage.module.css";
 import { notFound } from "next/navigation";

@@ -1,23 +1,16 @@
-"use client";
-
-import RoutesComponent from "src/app/topos/components/RoutesComponent";
+import RoutesComponent from "@/app/topos/[regionId]/[placeId]/sectores/RoutesComponent";
 import Image from "next/image";
-import { useState } from "react";
+
 import styles from "./SectorsToRender.module.css";
 import SectorInfo from "./SectorInfo";
 
-export default function SectorsToRender({ sector, routes }) {
-  const [isShow, setIsShow] = useState(false);
+export default function SectorsToRender({ sector, routes, isOpen, onToggle }) {
   const routesToRender = routes.filter((e) => e.sector_id == sector.id);
-
-  const handleRoutesBtnToggle = () => {
-    setIsShow(!isShow);
-  };
 
   return (
     <article className={styles.container}>
       <SectorInfo sector={sector} />
-      {!isShow ? (
+      {!isOpen ? (
         <>
           <Image
             className={styles.img}
@@ -26,21 +19,21 @@ export default function SectorsToRender({ sector, routes }) {
             height={"150"}
             alt='image of sector'
             src={
-              "https://hcegmotvdidgavvacgcy.supabase.co/storage/v1/object/sign/topo_pictures/WhatsApp%20Image%202024-12-22%20at%2023.32.22.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMDBlNjhhMS1jNTFhLTRhNzAtOTZiYy01MWU3NDA4ZDJjMDQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ0b3BvX3BpY3R1cmVzL1doYXRzQXBwIEltYWdlIDIwMjQtMTItMjIgYXQgMjMuMzIuMjIuanBlZyIsImlhdCI6MTc0OTg0NzI1MywiZXhwIjoxNzgxMzgzMjUzfQ.IFddFI0yqYSEL2cebV_i6aVKvVwSUXsGzN3KbvtdvXA"
+              "https://hcegmotvdidgavvacgcy.supabase.co/storage/v1/object/sign/topo_pictures/WhatsApp%20Image%202024-12-22%20at%2023.32.22.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMDBlNjhhMS1jNTFhLTRhNzAtOTZiYy01MWU3NDA4ZDJjMDQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ0b3BvX3BpY3R1cmVzL1DoYXJzdENhcHRpbWVzIEltYWdlIDIwMjQtMTItMjIgYXQgMjMuMzIuMjIuanBlZyIsImlhdCI6MTc0OTg0NzI1MywiZXhwIjoxNzgxMzgzMjUzfQ.IFddFI0yqYSEL2cebV_i6aVKvVwSUXsGzN3KbvtdvXA"
             }
           />
           <button
             className={
-              isShow ? `${styles.button} ${styles.buttonIsShow}` : styles.button
+              isOpen ? `${styles.button} ${styles.buttonIsShow}` : styles.button
             }
-            onClick={handleRoutesBtnToggle}
+            onClick={onToggle}
           >
             Ver Rutas
           </button>
         </>
       ) : (
         <>
-          <div className={isShow && ` ${styles.imgIsShow}`}>
+          <div className={isOpen ? ` ${styles.imgIsShow}` :`` }>
             <Image
               className={styles.img}
               width={"300"}
@@ -50,11 +43,11 @@ export default function SectorsToRender({ sector, routes }) {
             />
             <button
               className={
-                isShow
+                isOpen
                   ? `${styles.button} ${styles.buttonIsShow}`
                   : styles.button
               }
-              onClick={handleRoutesBtnToggle}
+              onClick={onToggle}
             >
               Ocultar Rutas
             </button>

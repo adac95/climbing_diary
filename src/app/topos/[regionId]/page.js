@@ -12,7 +12,7 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `Topos de ${region[0]?.name}` || "Lugar",
-    description: region?.information || "Descripción del lugar",
+    description: region[0]?.information || "Descripción del lugar",
   };
 }
 

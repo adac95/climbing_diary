@@ -1,3 +1,4 @@
+"use client";
 import styles from "./RoutesComponent.module.css";
 import { useState } from "react";
 import Modal from "@components/Modal";
