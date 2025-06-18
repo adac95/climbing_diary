@@ -20,6 +20,7 @@ export default function RootLayout({ children }) {
     <html lang='es'>
       <body>
         <div className={`${inter.className} antialiased`}>
+          <div id='modal-root'></div>
           <Header />
           <div className='bodyContainer'>{children}</div>
         </div>

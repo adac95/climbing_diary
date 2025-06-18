@@ -1,13 +1,34 @@
 "use client";
+
+import { useMemo } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import styles from "./RoutesComponent.module.css";
-import { useState } from "react";
 import Modal from "@components/Modal";
 import RouteDoneModal from "@components/RouteDoneModal";
 
 function RoutesComponent({ routes }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const routeId = searchParams.get("routeId");
+
+  const selectedRoute = useMemo(() => {
+    if (!routeId) return null;
+    return routes.find((r) => r.id === routeId);
+  }, [routeId, routes]);
+
+  const openModal = (id) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("routeId", id);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
   const closeModal = () => {
-    setIsOpen(false);
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("routeId");
+    const newUrl = params.toString() ? `${pathname}?${params}` : pathname;
+    router.push(newUrl, { scroll: false });
   };
 
   return (
@@ -26,14 +47,15 @@ function RoutesComponent({ routes }) {
             <div className={styles.headerCell}>ENCADENADA</div>
           </div>
         </div>
+
         {routes.map((route) => (
           <article key={route.id} className={styles.routeCard}>
             <div className={styles.routeInfo}>
-            <div className={styles.routeInfoItem}>
-              <p className={styles.routeInfoLabel}>Nro:</p>
-              <p className={styles.routeInfoValue}>
-                {route["number_of_route_in_picture"]}
-              </p>
+              <div className={styles.routeInfoItem}>
+                <p className={styles.routeInfoLabel}>Nro:</p>
+                <p className={styles.routeInfoValue}>
+                  {route.number_of_route_in_picture}
+                </p>
               </div>
             </div>
             <h3 className={styles.routeTitle}>{route.name}</h3>
@@ -53,9 +75,7 @@ function RoutesComponent({ routes }) {
               <div className={styles.routeInfoItem}>
                 <p className={styles.routeInfoLabel}>Equipador@s:</p>
                 <p className={styles.routeInfoValue}>
-                  {route["route_developer"]
-                    .map((e) => e["developer_id"].name)
-                    .join(", ")}
+                  {route.route_developer.map((e) => e.developer_id.name).join(", ")}
                 </p>
               </div>
               <div className={styles.routeInfoItem}>
@@ -69,11 +89,13 @@ function RoutesComponent({ routes }) {
                 </p>
               </div>
               <label className={styles.checkboxLabel}>
-              <p className={styles.routeInfoLabel}>Encadenada:</p>
+                <p className={styles.routeInfoLabel}>Encadenada:</p>
                 <input
-                  type='checkbox'
-                  checked={route.completed}
-                  onChange={() => setIsOpen(true)}
+                  type="checkbox"
+                  checked={routeId === route.id}
+                  onChange={() =>
+                    routeId === route.id ? closeModal() : openModal(route.id)
+                  }
                   className={styles.checkbox}
                 />
               </label>
@@ -81,9 +103,10 @@ function RoutesComponent({ routes }) {
           </article>
         ))}
       </div>
-      {isOpen && (
-        <Modal isOpen={isOpen} onClose={closeModal}>
-          <RouteDoneModal onClose={closeModal} />
+
+      {selectedRoute && (
+        <Modal isOpen={true} onClose={closeModal}>
+          <RouteDoneModal route={selectedRoute} onClose={closeModal} />
         </Modal>
       )}
     </>

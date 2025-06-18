@@ -1,10 +1,12 @@
 import { useState, useCallback, memo } from "react";
 import styles from "./RouteDoneModal.module.css";
+import { SearchParamsContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
 
 // Componente de la tarjeta de sesión con estado local de expansión
 const SessionCard = memo(({ session }) => {
   // Cada tarjeta maneja su propio estado de expansión
   const [isExpanded, setIsExpanded] = useState(false);
+  
 
   // Función para alternar el estado de expansión local
   const toggleExpansion = useCallback(() => {
@@ -81,9 +83,10 @@ const SessionCard = memo(({ session }) => {
   );
 });
 
-export default function RouteDoneModal({ onClose }) {
+export default function RouteDoneModal({ route,onClose }) {
   const [activeTab, setActiveTab] = useState("route");
   const [showAttemptForm, setShowAttemptForm] = useState(false);
+
 
   // Datos de ejemplo para la ruta - ajustados para coincidir con la imagen de referencia
   const routeData = {
