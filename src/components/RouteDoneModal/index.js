@@ -1,12 +1,16 @@
 import { useState, useCallback, memo } from "react";
 import styles from "./RouteDoneModal.module.css";
-import { SearchParamsContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
+import Header from "./components/Header";
+import RouteInfo from "./components/RouteInfo";
+import TabNav from "./components/TabNav";
+import SessionCardComponent from "./components/SessionCard";
 
-// Componente de la tarjeta de sesión con estado local de expansión
+// SessionCard moved to its own file (components/SessionCard.js)
 const SessionCard = memo(({ session }) => {
   // Cada tarjeta maneja su propio estado de expansión
+  const hola = "hola";
+
   const [isExpanded, setIsExpanded] = useState(false);
-  
 
   // Función para alternar el estado de expansión local
   const toggleExpansion = useCallback(() => {
@@ -62,7 +66,9 @@ const SessionCard = memo(({ session }) => {
                 </div>
               </div>
               <div className={styles.attemptNote}>{attempt.note}</div>
-              <div className={styles.attemptCordada}>Cordada: {attempt.cordada}</div>
+              <div className={styles.attemptCordada}>
+                Cordada: {attempt.cordada}
+              </div>
               {attempt.hasMedia && (
                 <button className={styles.mediaButton}>
                   <span className={styles.cameraIcon}>📷</span> Multimedia
@@ -83,10 +89,9 @@ const SessionCard = memo(({ session }) => {
   );
 });
 
-export default function RouteDoneModal({ route,onClose }) {
+export default function RouteDoneModal({ route, onClose }) {
   const [activeTab, setActiveTab] = useState("route");
   const [showAttemptForm, setShowAttemptForm] = useState(false);
-
 
   // Datos de ejemplo para la ruta - ajustados para coincidir con la imagen de referencia
   const routeData = {
@@ -161,49 +166,16 @@ export default function RouteDoneModal({ route,onClose }) {
 
   return (
     <div className={styles.container}>
-      {/* Encabezado */}
-      <div className={styles.header}>
-        <h1 className={styles.routeTitle}>{routeData.name}</h1>
-        {/* Botón de cerrar */}
-        <button className={styles.closeButton} onClick={onClose}>
-          ×
-        </button>
-      </div>
+      <Header title={routeData.name} onClose={onClose} />
 
-      {/* Info de la ruta */}
-      <div className={styles.routeInfo}>
-        <div className={styles.locationInfo}>
-          <span className={styles.locationIcon}>📍</span>
-          <span>{routeData.location}</span>
-        </div>
-        <div className={styles.gradeBox}>{routeData.grade}</div>
-        <div className={styles.starsRating}>
-          {renderStars(routeData.rating)}
-        </div>
-        {routeData.isProject && (
-          <span className={styles.projectBadge}>Proyecto</span>
-        )}
-      </div>
+      <RouteInfo
+        location={routeData.location}
+        grade={routeData.grade}
+        rating={routeData.rating}
+        isProject={routeData.isProject}
+      />
 
-      {/* Pestañas */}
-      <div className={styles.tabs}>
-        <button
-          className={`${styles.tabButton} ${
-            activeTab === "route" ? styles.activeTab : ""
-          }`}
-          onClick={() => setActiveTab("route")}
-        >
-          Ruta
-        </button>
-        <button
-          className={`${styles.tabButton} ${
-            activeTab === "sessions" ? styles.activeTab : ""
-          }`}
-          onClick={() => setActiveTab("sessions")}
-        >
-          Sesiones
-        </button>
-      </div>
+      <TabNav activeTab={activeTab} onChange={setActiveTab} />
 
       {activeTab === "route" ? (
         // Contenido de la pestaña Ruta
@@ -382,7 +354,7 @@ export default function RouteDoneModal({ route,onClose }) {
 
             {sessionsData.map((session) => (
               <div key={session.id}>
-                <SessionCard session={session} />
+                <SessionCardComponent session={session} />
               </div>
             ))}
 
